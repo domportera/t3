@@ -1,0 +1,15 @@
+{
+  "Name": "StringListLength",
+  "Id": "5ebb6041-2857-4656-9e42-8b13095f63ed",
+  "Namespace": "lib.string.list",
+  "Inputs": [
+    {
+      "Id": "2a97ee00-5a10-4dec-a13a-bd047aa131fb"/*Input*/,
+      "DefaultValue": {
+        "Values": []
+      }
+    }
+  ],
+  "Children": [],
+  "Connections": []
+}

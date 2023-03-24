@@ -1,0 +1,178 @@
+{
+  "Name": "VideoTimelineItem",
+  "Id": "deb6b806-db8f-41e1-adea-8229953bd76f",
+  "Namespace": "user.dom",
+  "Inputs": [
+    {
+      "Id": "e4cd8557-cd10-4bc0-95b5-59ab59ebe36c"/*Path*/,
+      "DefaultValue": ""
+    },
+    {
+      "Id": "141ae1aa-8384-4542-a654-b2818f84db22"/*ClipStartTimes*/,
+      "DefaultValue": 0.0
+    },
+    {
+      "Id": "a6b5d9eb-6b30-4d40-b54d-eb0a662ea0fc"/*SelectedClip*/,
+      "DefaultValue": 0
+    },
+    {
+      "Id": "4ad01b88-0f36-44ad-89a2-b8eeeea13f1d"/*Volume*/,
+      "DefaultValue": 0.0
+    },
+    {
+      "Id": "9728fd42-2a36-419d-81b5-a1024b15ef3e"/*RestartThreshold*/,
+      "DefaultValue": 0.4
+    },
+    {
+      "Id": "16415c0d-7da2-4948-9405-40c96c5de885"/*Speed*/,
+      "DefaultValue": 1.0
+    },
+    {
+      "Id": "3cf434cf-7184-47b5-ac6d-a5c1fc9d3944"/*Command*/,
+      "DefaultValue": null
+    },
+    {
+      "Id": "a04af213-f0f5-4d98-ab5b-7e20b0212ae8"/*VideoFormatConversion*/,
+      "DefaultValue": "R8G8B8A8_UNorm"
+    }
+  ],
+  "Children": [
+    {
+      "Id": "5e282083-4dea-4b5a-b4a2-f9ce29472016"/*VideoPlayer*/,
+      "SymbolId": "dbd6650c-19a9-4e56-836d-1c26c99a6eae",
+      "InputValues": [
+        {
+          "Id": "c0059007-19f5-46df-bd02-747ae39fa59b"/*Path*/,
+          "Type": "System.String",
+          "Value": "Resources\\user\\dom\\proposal\\video\\Everything Everywhere All At Once (2022) - In Another Life [1⧸2] ｜ HD [K7LB74PLtVw].mkv"
+        },
+        {
+          "Id": "5c589a61-ff28-4789-9635-7cdb098afd9e"/*StartTime*/,
+          "Type": "System.Single",
+          "Value": 24.0
+        },
+        {
+          "Id": "efa1af06-c559-4a16-b3e0-a96200f48375"/*Volume*/,
+          "Type": "System.Single",
+          "Value": 0.0
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "67b0df16-bdb2-4e33-b49d-17d626fd206d"/*VideoPlayer*/,
+          "OutputData": {
+            "Type": "T3.Core.Animation.TimeClip",
+            "TimeClip": {
+              "TimeRange": {
+                "Start": 56.52824,
+                "End": 60.52824
+              },
+              "SourceRange": {
+                "Start": 56.52824,
+                "End": 60.52824
+              },
+              "LayerIndex": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Id": "928ca380-8654-4248-96b6-1176df32def3"/*SelectFloatFromList*/,
+      "SymbolId": "0841cdd4-0106-4f4e-826b-8de23bb5b5f0",
+      "InputValues": [],
+      "Outputs": []
+    },
+    {
+      "Id": "701430ad-6d31-4cbb-89e0-6fe3df8c0467"/*FloatsToList*/,
+      "SymbolId": "5c5d855c-3167-40a3-b4c3-e7b27b0d61cf",
+      "InputValues": [],
+      "Outputs": []
+    }
+  ],
+  "Connections": [
+    {
+      "SourceParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "SourceSlotId": "67b0df16-bdb2-4e33-b49d-17d626fd206d",
+      "TargetParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "TargetSlotId": "a1a31c94-02ae-4382-a626-a4a3d0378288"
+    },
+    {
+      "SourceParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "SourceSlotId": "a3443ccc-70f3-48f2-9bc9-9e97c144bd88",
+      "TargetParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "TargetSlotId": "a3264eb6-71df-4003-b4a1-88d14171463d"
+    },
+    {
+      "SourceParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "SourceSlotId": "3cf434cf-7184-47b5-ac6d-a5c1fc9d3944",
+      "TargetParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "TargetSlotId": "361e62b4-fa0d-44e1-a1d7-65f99c38a45f"
+    },
+    {
+      "SourceParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "SourceSlotId": "a04af213-f0f5-4d98-ab5b-7e20b0212ae8",
+      "TargetParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "TargetSlotId": "3a3b9866-85e9-4048-bb1c-faccd4e513c7"
+    },
+    {
+      "SourceParentOrChildId": "928ca380-8654-4248-96b6-1176df32def3",
+      "SourceSlotId": "ec2286af-3ee0-4af0-aa23-272d4b3710e0",
+      "TargetParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "TargetSlotId": "5c589a61-ff28-4789-9635-7cdb098afd9e"
+    },
+    {
+      "SourceParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "SourceSlotId": "16415c0d-7da2-4948-9405-40c96c5de885",
+      "TargetParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "TargetSlotId": "66b93a87-a80c-47bf-bff2-1e2cc178555a"
+    },
+    {
+      "SourceParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "SourceSlotId": "9728fd42-2a36-419d-81b5-a1024b15ef3e",
+      "TargetParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "TargetSlotId": "793a470f-1b94-4766-899f-3010b03a7834"
+    },
+    {
+      "SourceParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "SourceSlotId": "e4cd8557-cd10-4bc0-95b5-59ab59ebe36c",
+      "TargetParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "TargetSlotId": "c0059007-19f5-46df-bd02-747ae39fa59b"
+    },
+    {
+      "SourceParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "SourceSlotId": "4ad01b88-0f36-44ad-89a2-b8eeeea13f1d",
+      "TargetParentOrChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "TargetSlotId": "efa1af06-c559-4a16-b3e0-a96200f48375"
+    },
+    {
+      "SourceParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "SourceSlotId": "141ae1aa-8384-4542-a654-b2818f84db22",
+      "TargetParentOrChildId": "701430ad-6d31-4cbb-89e0-6fe3df8c0467",
+      "TargetSlotId": "15874509-fabb-44ca-93a1-858ff95fb5f5"
+    },
+    {
+      "SourceParentOrChildId": "00000000-0000-0000-0000-000000000000",
+      "SourceSlotId": "a6b5d9eb-6b30-4d40-b54d-eb0a662ea0fc",
+      "TargetParentOrChildId": "928ca380-8654-4248-96b6-1176df32def3",
+      "TargetSlotId": "2f87e21a-a1bd-4e2a-948c-2fa35245998d"
+    },
+    {
+      "SourceParentOrChildId": "701430ad-6d31-4cbb-89e0-6fe3df8c0467",
+      "SourceSlotId": "9140bd66-3257-498a-80cd-c516c128f7e5",
+      "TargetParentOrChildId": "928ca380-8654-4248-96b6-1176df32def3",
+      "TargetSlotId": "329ba6a4-5b84-43fc-8899-0c04465844da"
+    }
+  ],
+  "Animator": [
+    {
+      "InstanceId": "5e282083-4dea-4b5a-b4a2-f9ce29472016",
+      "InputId": "5c589a61-ff28-4789-9635-7cdb098afd9e",
+      "Curve": {
+        "PreCurve": "CycleWithOffset",
+        "PostCurve": "Constant",
+        "Keys": []
+      }
+    }
+  ]
+}

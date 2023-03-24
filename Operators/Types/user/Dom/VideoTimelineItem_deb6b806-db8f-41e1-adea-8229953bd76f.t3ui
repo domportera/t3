@@ -1,0 +1,120 @@
+{
+  "Id": "deb6b806-db8f-41e1-adea-8229953bd76f"/*VideoTimelineItem*/,
+  "Description": "",
+  "InputUis": [
+    {
+      "InputId": "e4cd8557-cd10-4bc0-95b5-59ab59ebe36c"/*Path*/,
+      "Relevancy": "Relevant",
+      "Position": {
+        "X": 121.09915,
+        "Y": -38.903236
+      },
+      "Usage": "FilePath"
+    },
+    {
+      "InputId": "141ae1aa-8384-4542-a654-b2818f84db22"/*ClipStartTimes*/,
+      "Relevancy": "Relevant",
+      "Position": {
+        "X": 121.09915,
+        "Y": 6.0967636
+      }
+    },
+    {
+      "InputId": "a6b5d9eb-6b30-4d40-b54d-eb0a662ea0fc"/*SelectedClip*/,
+      "Position": {
+        "X": 121.09915,
+        "Y": 51.096764
+      }
+    },
+    {
+      "InputId": "4ad01b88-0f36-44ad-89a2-b8eeeea13f1d"/*Volume*/,
+      "Position": {
+        "X": 121.09915,
+        "Y": 96.09676
+      },
+      "Min": -1.0,
+      "Max": 42.0
+    },
+    {
+      "InputId": "9728fd42-2a36-419d-81b5-a1024b15ef3e"/*RestartThreshold*/,
+      "Position": {
+        "X": 121.09915,
+        "Y": 141.09677
+      }
+    },
+    {
+      "InputId": "16415c0d-7da2-4948-9405-40c96c5de885"/*Speed*/,
+      "Position": {
+        "X": 121.09915,
+        "Y": 186.09677
+      }
+    },
+    {
+      "InputId": "3cf434cf-7184-47b5-ac6d-a5c1fc9d3944"/*Command*/,
+      "Position": {
+        "X": 121.09915,
+        "Y": 231.09677
+      }
+    },
+    {
+      "InputId": "a04af213-f0f5-4d98-ab5b-7e20b0212ae8"/*VideoFormatConversion*/,
+      "Position": {
+        "X": 121.09915,
+        "Y": 276.09677
+      }
+    }
+  ],
+  "SymbolChildUis": [
+    {
+      "ChildId": "5e282083-4dea-4b5a-b4a2-f9ce29472016"/*VideoPlayer*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 114.0
+      },
+      "Position": {
+        "X": 662.59314,
+        "Y": 0.0
+      }
+    },
+    {
+      "ChildId": "928ca380-8654-4248-96b6-1176df32def3"/*SelectFloatFromList*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 451.9186,
+        "Y": 15.151428
+      }
+    },
+    {
+      "ChildId": "701430ad-6d31-4cbb-89e0-6fe3df8c0467"/*FloatsToList*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 287.4755,
+        "Y": -18.060616
+      }
+    }
+  ],
+  "OutputUis": [
+    {
+      "OutputId": "a1a31c94-02ae-4382-a626-a4a3d0378288"/*ExecuteCommand*/,
+      "Position": {
+        "X": 812.59314,
+        "Y": 0.0
+      }
+    },
+    {
+      "OutputId": "a3264eb6-71df-4003-b4a1-88d14171463d"/*OutTex*/,
+      "Position": {
+        "X": 812.59314,
+        "Y": 87.8313
+      }
+    }
+  ]
+}

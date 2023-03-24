@@ -1,0 +1,526 @@
+{
+  "Id": "dbd6650c-19a9-4e56-836d-1c26c99a6eae"/*VideoPlayer*/,
+  "Description": "",
+  "InputUis": [
+    {
+      "InputId": "c0059007-19f5-46df-bd02-747ae39fa59b"/*Path*/,
+      "Relevancy": "Required",
+      "Position": {
+        "X": -40.168488,
+        "Y": -261.00394
+      },
+      "Usage": "FilePath"
+    },
+    {
+      "InputId": "5c589a61-ff28-4789-9635-7cdb098afd9e"/*StartTime*/,
+      "Position": {
+        "X": -40.168488,
+        "Y": -216.00394
+      },
+      "Scale": 1.0
+    },
+    {
+      "InputId": "efa1af06-c559-4a16-b3e0-a96200f48375"/*Volume*/,
+      "Position": {
+        "X": -40.168488,
+        "Y": -171.00394
+      }
+    },
+    {
+      "InputId": "793a470f-1b94-4766-899f-3010b03a7834"/*RestartThreshold*/,
+      "Position": {
+        "X": -40.168488,
+        "Y": -126.00394
+      },
+      "Min": 0.06,
+      "Max": 5.0,
+      "Clamp": true
+    },
+    {
+      "InputId": "66b93a87-a80c-47bf-bff2-1e2cc178555a"/*Speed*/,
+      "Relevancy": "Relevant",
+      "Position": {
+        "X": -40.168488,
+        "Y": -81.00394
+      }
+    },
+    {
+      "InputId": "361e62b4-fa0d-44e1-a1d7-65f99c38a45f"/*Command*/,
+      "Position": {
+        "X": -40.168488,
+        "Y": -36.003937
+      }
+    },
+    {
+      "InputId": "3a3b9866-85e9-4048-bb1c-faccd4e513c7"/*VideoFormatConversion*/,
+      "Relevancy": "Relevant",
+      "Position": {
+        "X": -40.168488,
+        "Y": 8.996063
+      }
+    }
+  ],
+  "SymbolChildUis": [
+    {
+      "ChildId": "e67eb045-aefb-45d1-ad7e-70eb6a765baf"/*PlayVideo*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 75.0
+      },
+      "Position": {
+        "X": 580.97156,
+        "Y": 60.71765
+      }
+    },
+    {
+      "ChildId": "4b803a31-4d09-4fa5-b518-f28b4b6592ff"/*Speed Multiply*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 459.58688,
+        "Y": -169.03934
+      }
+    },
+    {
+      "ChildId": "e0842ad8-17e6-4fcf-902d-8586130bd4f5"/*Execute*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 127.0
+      },
+      "Position": {
+        "X": 1489.7632,
+        "Y": -171.44966
+      }
+    },
+    {
+      "ChildId": "27033309-7e83-4983-b870-eae2e3118655"/*_videoSeconds*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 62.0
+      },
+      "Position": {
+        "X": 1210.4124,
+        "Y": -271.28125
+      }
+    },
+    {
+      "ChildId": "fffcfc04-b4ff-443c-b752-fd676d083cd9"/*GetFloatVar*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 488.5593,
+        "Y": -278.44522
+      }
+    },
+    {
+      "ChildId": "a8e07d63-2f2b-4b3b-934e-79f83de0ea81"/*Add*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 652.2653,
+        "Y": -246.10614
+      }
+    },
+    {
+      "ChildId": "7ddec6e8-3fbe-4424-bb25-ea9f0c6e7213"/*_timeLastUpdated*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 1209.7205,
+        "Y": -138.01395
+      }
+    },
+    {
+      "ChildId": "033f3e0a-4c71-46dc-ab55-3f5884e4dca4"/*BoolToFloats*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 62.0
+      },
+      "Position": {
+        "X": 965.86505,
+        "Y": -245.40845
+      }
+    },
+    {
+      "ChildId": "a31006e2-2ed9-4ea3-8e01-87f5ec1ffa3c"/*Layer2d*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 1041.7715,
+        "Y": 37.012924
+      }
+    },
+    {
+      "ChildId": "4f7a307d-dc7a-4d10-a1b2-33c505388d14"/*_VideoFormatConversion*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 854.3492,
+        "Y": 96.2094
+      }
+    },
+    {
+      "ChildId": "b256c0f3-3b1c-4606-998b-d84afd5ddc58"/*_videoSeconds*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 509.47592,
+        "Y": 188.11696
+      }
+    },
+    {
+      "ChildId": "9f51785e-2998-4401-beef-5a82f887703f"/*Sub*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 128.27982,
+        "Y": -446.4454
+      }
+    },
+    {
+      "ChildId": "ba810321-f61f-4c54-b283-ca4daf00c469"/*_timeLastUpdated*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": -21.720184,
+        "Y": -416.4454
+      }
+    },
+    {
+      "ChildId": "c89690fc-8fde-45b8-a095-2db89b97116e"/*Compare*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 434.78958,
+        "Y": -449.5631
+      }
+    },
+    {
+      "ChildId": "7e023500-1ae6-4fbc-9626-ed0c8aa6832b"/*DeltaSinceLastFrame*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 267.4116,
+        "Y": -48.52133
+      }
+    },
+    {
+      "ChildId": "adb21f92-a835-4097-ba4a-f011517db255"/*Time*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 23.0
+      },
+      "Position": {
+        "X": 139.55792,
+        "Y": -47.733124
+      }
+    },
+    {
+      "ChildId": "3dede6c0-c5fa-439d-bfa9-46912d15610e"/*Time*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 23.0
+      },
+      "Position": {
+        "X": -21.720184,
+        "Y": -457.2803
+      }
+    },
+    {
+      "ChildId": "e2f2a13a-c20e-411e-9456-c656687856cf"/*Time*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 23.0
+      },
+      "Position": {
+        "X": 997.84106,
+        "Y": -123.86009
+      }
+    },
+    {
+      "ChildId": "ca73ec71-9689-40bb-ba54-0273733a30d9"/*Time changed or exceeded restart threshold*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 652.3103,
+        "Y": -393.68433
+      }
+    },
+    {
+      "ChildId": "fada755d-2774-47af-b8ab-94c50cf34da9"/*Abs*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 278.27982,
+        "Y": -446.4454
+      }
+    },
+    {
+      "ChildId": "c6856322-6dc0-4ee5-9542-f386aaf3e4b6"/*HasTimeChanged*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 23.0
+      },
+      "Position": {
+        "X": 496.3841,
+        "Y": -365.1384
+      }
+    },
+    {
+      "ChildId": "d2014fad-8d45-4823-b2d2-7bfa41c0d687"/*_restartThreshold*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 62.0
+      },
+      "Position": {
+        "X": 1215.8635,
+        "Y": -379.2653
+      }
+    },
+    {
+      "ChildId": "e8b8e7ee-acaf-4a21-a9bb-4e7d7978259c"/*_restartThreshold*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 136.09232,
+        "Y": 183.89432
+      }
+    },
+    {
+      "ChildId": "80339f00-57cd-4638-93d3-eadc05cc5efd"/*Choose Restart Threshold*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 62.0
+      },
+      "Position": {
+        "X": 1021.295,
+        "Y": -401.98734
+      }
+    },
+    {
+      "ChildId": "b0e9324d-e6ed-481d-8dcf-22cd78e8ecc8"/*Multiply*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 811.9716,
+        "Y": -318.87335
+      }
+    },
+    {
+      "ChildId": "ef80ef84-538f-4cd1-81aa-19009709227c"/*_startTime*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 62.0
+      },
+      "Position": {
+        "X": 1221.1647,
+        "Y": -539.7937
+      }
+    },
+    {
+      "ChildId": "fea9a2af-3bc5-472f-8e4c-96bbfe24508d"/*_startTime*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 23.0
+      },
+      "Position": {
+        "X": 272.5691,
+        "Y": -650.6453
+      }
+    },
+    {
+      "ChildId": "7c35761f-fcc5-4528-b281-8a9614c29b8b"/*== input's start time*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 426.48083,
+        "Y": -665.6611
+      }
+    },
+    {
+      "ChildId": "bc788a97-a1fb-4599-849d-72c6ccebb837"/*BoolToFloats*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 62.0
+      },
+      "Position": {
+        "X": 1071.1647,
+        "Y": -539.7937
+      }
+    },
+    {
+      "ChildId": "1ece8df0-5293-46cc-8481-8d026eb87158"/*_timeLastUpdated to 0*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 1221.1647,
+        "Y": -621.7937
+      }
+    },
+    {
+      "ChildId": "a57f5d13-2b2e-4d74-9d82-deee9863ea7f"/*Boolean*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 863.0528,
+        "Y": -661.6425
+      }
+    },
+    {
+      "ChildId": "1a70e132-31cf-4428-b759-42501eb38eff"/*BoolToFloats*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 62.0
+      },
+      "Position": {
+        "X": 1056.699,
+        "Y": -641.7058
+      }
+    },
+    {
+      "ChildId": "3c152f31-739b-4aa1-abea-ee0c4c4f54b3"/*_timeLastUpdated*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 863.0528,
+        "Y": -605.6425
+      }
+    },
+    {
+      "ChildId": "70e22513-ecd1-4dcc-900f-1ea708a40ee2"/*_startTime*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 23.0
+      },
+      "Position": {
+        "X": 926.98224,
+        "Y": -495.68808
+      }
+    },
+    {
+      "ChildId": "41d45ecf-bd94-418f-8db4-bbf1a54c7a41"/*Speed == 1*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 36.0
+      },
+      "Position": {
+        "X": 146.55142,
+        "Y": 109.466446
+      }
+    },
+    {
+      "ChildId": "3970f4c5-652a-493e-86ec-5273a8f5290f"/*DefaultRestartResyncThreshold*/,
+      "Size": {
+        "X": 110.0,
+        "Y": 23.0
+      },
+      "Position": {
+        "X": 668.36566,
+        "Y": -292.65283
+      }
+    },
+    {
+      "ChildId": "86d81abf-ac5c-4a45-a5e2-2c18dbb88a1d"/*BoolToFloats*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 62.0
+      },
+      "Position": {
+        "X": 324.40503,
+        "Y": 101.80411
+      }
+    }
+  ],
+  "OutputUis": [
+    {
+      "OutputId": "67b0df16-bdb2-4e33-b49d-17d626fd206d"/*ClipCommand*/,
+      "Position": {
+        "X": 1724.397,
+        "Y": -133.83966
+      }
+    },
+    {
+      "OutputId": "a3443ccc-70f3-48f2-9bc9-9e97c144bd88"/*Texture*/,
+      "Position": {
+        "X": 1724.397,
+        "Y": -33.83966
+      }
+    }
+  ],
+  "Annotations": [
+    {
+      "Id": "1d3adbfb-d235-454e-8dc4-c5600a233ce9",
+      "Title": "All this stuff is pretty hacky, but this especially. \nBasically, if speed is anything but 1, it will ensure the video is constantantly resyncing.\nThis is because PlayVideo, by default, references Resync using only the playback.",
+      "Color": {
+        "X": 0.6,
+        "Y": 0.6,
+        "Z": 0.6,
+        "W": 1.0
+      },
+      "Position": {
+        "X": 76.09224,
+        "Y": 41.804108
+      },
+      "Size": {
+        "X": 418.3133,
+        "Y": 238.09027
+      }
+    }
+  ]
+}

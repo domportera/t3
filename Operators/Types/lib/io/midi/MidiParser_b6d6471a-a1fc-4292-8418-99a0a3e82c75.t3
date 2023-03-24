@@ -1,0 +1,21 @@
+{
+  "Name": "MidiParser",
+  "Id": "b6d6471a-a1fc-4292-8418-99a0a3e82c75",
+  "Namespace": "lib.io.midi",
+  "Inputs": [
+    {
+      "Id": "8866cb69-18e8-4bc0-9d1f-8b05bd24a0fd"/*MidiEvents*/,
+      "DefaultValue": null
+    },
+    {
+      "Id": "149c67a6-eebf-48de-a1cc-788899b4f7bb"/*Channel*/,
+      "DefaultValue": 0
+    },
+    {
+      "Id": "56706717-21ae-4d5d-ad3e-60b48a4c131c"/*Track*/,
+      "DefaultValue": 0
+    }
+  ],
+  "Children": [],
+  "Connections": []
+}

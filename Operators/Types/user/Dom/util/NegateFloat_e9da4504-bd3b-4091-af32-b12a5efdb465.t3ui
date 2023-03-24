@@ -1,0 +1,36 @@
+{
+  "Id": "e9da4504-bd3b-4091-af32-b12a5efdb465"/*NegateFloat*/,
+  "Description": "",
+  "InputUis": [
+    {
+      "InputId": "2fda6585-df56-4ec3-a413-c6c31107b272"/*A*/,
+      "Position": {
+        "X": -200.0,
+        "Y": 0.0
+      }
+    }
+  ],
+  "SymbolChildUis": [
+    {
+      "ChildId": "cd7ab7ce-894c-401e-a1f1-e994931fc13a"/*Multiply*/,
+      "Style": "Expanded",
+      "Size": {
+        "X": 110.0,
+        "Y": 49.0
+      },
+      "Position": {
+        "X": 0.0,
+        "Y": 0.0
+      }
+    }
+  ],
+  "OutputUis": [
+    {
+      "OutputId": "b407347e-10dc-4816-9e8b-0226f5a78383"/*Result*/,
+      "Position": {
+        "X": 150.0,
+        "Y": 0.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "Id": "b6d6471a-a1fc-4292-8418-99a0a3e82c75"/*MidiParser*/,
+  "InputUis": [
+    {
+      "InputId": "8866cb69-18e8-4bc0-9d1f-8b05bd24a0fd"/*MidiEvents*/,
+      "Position": {
+        "X": -200.0,
+        "Y": 0.0
+      }
+    },
+    {
+      "InputId": "149c67a6-eebf-48de-a1cc-788899b4f7bb"/*Channel*/,
+      "Position": {
+        "X": -200.0,
+        "Y": 45.0
+      }
+    },
+    {
+      "InputId": "56706717-21ae-4d5d-ad3e-60b48a4c131c"/*Track*/,
+      "Position": {
+        "X": -200.0,
+        "Y": 90.0
+      }
+    }
+  ],
+  "SymbolChildUis": [],
+  "OutputUis": [
+    {
+      "OutputId": "ed6a2750-0f60-42f3-82cc-8b312b6edc42"/*Notes*/,
+      "Position": {
+        "X": 300.0,
+        "Y": 200.0
+      }
+    },
+    {
+      "OutputId": "714be192-0009-4434-a29f-46b6888c22a9"/*CC*/,
+      "Position": {
+        "X": 300.0,
+        "Y": 300.0
+      }
+    }
+  ]
+}

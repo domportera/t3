@@ -8,7 +8,15 @@
       "DefaultValue": ""
     },
     {
+      "Id": "01993aa9-ca73-4c74-ad03-340b37c4e47c"/*UseAbsoluteTime*/,
+      "DefaultValue": true
+    },
+    {
       "Id": "8b88c669-7351-4332-9294-9a06a46f45a1"/*PrintLogMessages*/,
+      "DefaultValue": false
+    },
+    {
+      "Id": "c875e9b1-8f25-4f87-954b-05d2ec19df57"/*UseNumbersAsNames*/,
       "DefaultValue": false
     }
   ],

@@ -1,5 +1,6 @@
 {
   "Id": "a3ceb788-4055-4556-961b-63b7221f93e7"/*MidiClip*/,
+  "Description": "TrackNumber set to -1 means that it will read midi from all tracks in the file. However, the current implementation does not yet handle multi-track inputs independently, and you can end up with double-ons or offs if several tracks have the same notes or CC events.",
   "InputUis": [
     {
       "InputId": "31fe831f-c3be-4ae3-884b-d2fc4f1754a4"/*Filename*/,
@@ -10,10 +11,24 @@
       "Usage": "FilePath"
     },
     {
+      "InputId": "01993aa9-ca73-4c74-ad03-340b37c4e47c"/*UseAbsoluteTime*/,
+      "Position": {
+        "X": -200.0,
+        "Y": 90.0
+      }
+    },
+    {
       "InputId": "8b88c669-7351-4332-9294-9a06a46f45a1"/*PrintLogMessages*/,
       "Position": {
         "X": -200.0,
         "Y": 90.0
+      }
+    },
+    {
+      "InputId": "c875e9b1-8f25-4f87-954b-05d2ec19df57"/*UseNumbersAsNames*/,
+      "Position": {
+        "X": -200.0,
+        "Y": 135.0
       }
     }
   ],
@@ -38,6 +53,34 @@
       "Position": {
         "X": 300.0,
         "Y": 700.0
+      }
+    },
+    {
+      "OutputId": "8592e9c6-c15d-4024-b13f-2206dd52ed72"/*CurrentNoteEvents*/,
+      "Position": {
+        "X": 300.0,
+        "Y": 800.0
+      }
+    },
+    {
+      "OutputId": "8ba700a8-464a-442f-abec-137de04127c3"/*NoteOnEvents*/,
+      "Position": {
+        "X": 300.0,
+        "Y": 900.0
+      }
+    },
+    {
+      "OutputId": "b18d8417-ffc7-4f66-8f74-df4f8bc8a3f0"/*NoteOffEvents*/,
+      "Position": {
+        "X": 300.0,
+        "Y": 1000.0
+      }
+    },
+    {
+      "OutputId": "e443484c-2c3f-43b9-9d70-dcca3a7e710d"/*CCEvents*/,
+      "Position": {
+        "X": 300.0,
+        "Y": 1100.0
       }
     }
   ]
