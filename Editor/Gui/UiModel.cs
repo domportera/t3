@@ -181,7 +181,7 @@ namespace T3.Editor.Gui
                            () => new ValueOutputUi<RawRectangle>());
             RegisterUiType(typeof(SharpDX.Vector4[]), new PointListUiProperties(), () => new FallbackInputUi<SharpDX.Vector4[]>(),
                            () => new ValueOutputUi<SharpDX.Vector4[]>());
-            RegisterUiType(typeof(Dict<float>), new FloatUiProperties(),
+            RegisterUiType(typeof(Dict<string, float>), new FloatUiProperties(),
                            () => new FloatDictInputUi(), () => new FloatDictOutputUi());
 
             // register custom UIs for symbol children

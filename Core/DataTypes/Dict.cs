@@ -1,23 +1,27 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using T3.Core.Logging;
-using T3.Core.Operator;
 using T3.Core.Operator.Slots;
 using T3.Core.Resource;
 
 namespace T3.Core.DataTypes
 {
-    public class Dict<T> : Dictionary<string, T>, ICloneable, IOutputData
+    public class Dict<TKey, TValue> : Dictionary<TKey, TValue>, ICloneable, IOutputData
     {
         public Guid Id { get; set; }
 
-        public Type DataType => typeof(Dict<T>);
+        public Type DataType => typeof(Dict<TKey, TValue>);
 
-        public Dict(T defaultValue)
+        public Dict(TValue defaultValue)
         {
             _defaultValue = defaultValue;
+            if (typeof(TKey) != typeof(string))
+            {
+                Log.Warning($"{nameof(Dict<TKey, TValue>)} is untested for types other than string");
+            }
         }
 
         public void ToJson(JsonTextWriter writer)
@@ -48,8 +52,8 @@ namespace T3.Core.DataTypes
             
             while (keys.HasValues && values.HasValues)
             {
-                var key = keys.First.ToObject<string>();
-                var val = values.First.ToObject<T>();
+                var key = keys.First.ToObject<TKey>();
+                var val = values.First.ToObject<TValue>();
                 this[key] = val;
                 keys.First.Remove();
                 values.First.Remove();
@@ -58,7 +62,7 @@ namespace T3.Core.DataTypes
 
         public bool Assign(IOutputData outputData)
         {
-            if (outputData is Dict<T> otherDict)
+            if (outputData is Dict<TKey, TValue> otherDict)
             {
                 Clear();
                 foreach (var (key, value) in otherDict)
@@ -77,9 +81,9 @@ namespace T3.Core.DataTypes
             return TypedClone();
         }
 
-        private Dict<T> TypedClone()
+        private Dict<TKey, TValue> TypedClone()
         {
-            var result = new Dict<T>(_defaultValue);
+            var result = new Dict<TKey, TValue>(_defaultValue);
             foreach (var kvp in this)
             {
                 result[kvp.Key] = kvp.Value;
@@ -87,6 +91,6 @@ namespace T3.Core.DataTypes
             return result;
         }
 
-        private readonly T _defaultValue;
+        private readonly TValue _defaultValue;
     }
 }

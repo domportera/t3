@@ -183,7 +183,7 @@ namespace T3.Operators.Types.Id_b6d6471a_a1fc_4292_8418_99a0a3e82c75
         private const int NumberNotesAndCc = 128;
 
         [Input(Guid = "8866CB69-18E8-4BC0-9D1F-8B05BD24A0FD")]
-        public readonly InputSlot<Dict<float>> MidiEvents = new(new Dict<float>(0f));
+        public readonly InputSlot<Dict<string, float>> MidiEvents = new(new Dict<string, float>(0f));
         
         [Input(Guid = "149C67A6-EEBF-48DE-A1CC-788899B4F7BB")]
         public readonly InputSlot<int> Channel = new();

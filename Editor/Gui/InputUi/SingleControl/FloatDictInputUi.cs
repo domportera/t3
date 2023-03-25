@@ -3,7 +3,7 @@ using T3.Core.DataTypes;
 
 namespace T3.Editor.Gui.InputUi.SingleControl
 {
-    public class FloatDictInputUi : SingleControlInputUi<Dict<float>>
+    public class FloatDictInputUi : SingleControlInputUi<Dict<string, float>>
     {
         public override IInputUi Clone()
         {
@@ -16,7 +16,7 @@ namespace T3.Editor.Gui.InputUi.SingleControl
                    };
         }
 
-        protected override bool DrawSingleEditControl(string name, ref Dict<float> list)
+        protected override bool DrawSingleEditControl(string name, ref Dict<string, float> list)
         {
             if (list != null)
             {
@@ -26,7 +26,7 @@ namespace T3.Editor.Gui.InputUi.SingleControl
             return false;
         }
 
-        protected override void DrawReadOnlyControl(string name, ref Dict<float> list)
+        protected override void DrawReadOnlyControl(string name, ref Dict<string, float> list)
         {
             var outputString = (list == null) ? "NULL" :  string.Join(", ", list);
             ImGui.TextUnformatted($"{outputString}");

@@ -11,7 +11,7 @@ namespace T3.Operators.Types.Id_fd5467c7_c75d_4755_8885_fd1ff1f07c95
         public readonly Slot<float> Result = new(0f);
 
         [Input(Guid = "126D52EB-CDF9-48E6-AC77-BB6E90700C56")]
-        public readonly InputSlot<Dict<float>> DictionaryInput = new();
+        public readonly InputSlot<Dict<string, float>> DictionaryInput = new();
 
         [Input(Guid = "B0ACB8AD-9F90-4908-B780-1297E0A1D572")]
         public readonly InputSlot<string> Select = new();
@@ -30,7 +30,7 @@ namespace T3.Operators.Types.Id_fd5467c7_c75d_4755_8885_fd1ff1f07c95
                 _dict.TryGetValue(_selectCommand, out Result.Value);
         }
 
-        private Dict<float> _dict;
+        private Dict<string, float> _dict;
         private string _selectCommand;
     }
 }

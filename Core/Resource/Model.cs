@@ -420,8 +420,8 @@ namespace T3.Core.Resource
                          });
             RegisterType(typeof(SharpDX.Vector4[]), "Vector4[]",
                          () => new InputValue<SharpDX.Vector4[]>(Array.Empty<SharpDX.Vector4>()));
-            RegisterType(typeof(Dict<float>), "Dict<float>",
-                         () => new InputValue<Dict<float>>());
+            RegisterType(typeof(Dict<string, float>), "Dict<string, float>",
+                         () => new InputValue<Dict<string, float>>());
 
             _updateCounter = new OpUpdateCounter();
         }

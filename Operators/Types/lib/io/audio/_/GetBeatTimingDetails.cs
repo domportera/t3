@@ -15,7 +15,7 @@ namespace T3.Operators.Types.Id_712c50e8_7cba_4b29_bde4_1d860ab6b701
         //public readonly Slot<float> TimeInBars = new Slot<float>();
         
         [Output(Guid = "F697732E-46F3-4037-AFC5-56F396BD70AD", DirtyFlagTrigger = DirtyFlagTrigger.Animated)]
-        public readonly Slot<Dict<float>> Values = new();
+        public readonly Slot<Dict<string, float>> Values = new();
 
         public GetBeatTimingDetails()
         {
@@ -40,6 +40,6 @@ namespace T3.Operators.Types.Id_712c50e8_7cba_4b29_bde4_1d860ab6b701
             Values.Value = _details;
         }
         
-        private readonly Dict<float> _details = new(0f);
+        private readonly Dict<string, float> _details = new(0f);
     }
 }

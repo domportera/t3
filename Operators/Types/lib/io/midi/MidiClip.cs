@@ -12,25 +12,19 @@ using NAudio.Midi;
 
 namespace T3.Operators.Types.Id_a3ceb788_4055_4556_961b_63b7221f93e7
 {
-    public class MidiClip : Instance<MidiClip>, IDisposable
+    public class MidiClip : Instance<MidiClip>
     {
-        [Output(Guid = "04BFDF5C-7D05-469A-89BE-525F27186F69", DirtyFlagTrigger = DirtyFlagTrigger.Animated)]
-        public readonly TimeClipSlot<Dict<float>> Values = new();
-
-        [Output(Guid = "C08C4B81-65B0-4FC3-AF46-F06E72838F9D")]
-        public readonly Slot<List<string>> ChannelNames = new();
-
         [Output(Guid = "8592E9C6-C15D-4024-B13F-2206DD52ED72", DirtyFlagTrigger = DirtyFlagTrigger.Animated)]
-        public readonly TimeClipSlot<Dict<float>> CurrentNoteEvents = new();
+        public readonly TimeClipSlot<Dict<string, float>> CurrentNoteEvents = new();
         
         [Output(Guid = "8BA700A8-464A-442F-ABEC-137DE04127C3", DirtyFlagTrigger = DirtyFlagTrigger.Animated)]
-        public readonly TimeClipSlot<Dict<float>> NoteOnEvents = new();
+        public readonly TimeClipSlot<Dict<string, float>> NoteOnEvents = new();
         
         [Output(Guid = "B18D8417-FFC7-4F66-8F74-DF4F8BC8A3F0", DirtyFlagTrigger = DirtyFlagTrigger.Animated)]
-        public readonly TimeClipSlot<Dict<float>> NoteOffEvents = new();
+        public readonly TimeClipSlot<Dict<string, float>> NoteOffEvents = new();
         
         [Output(Guid = "E443484C-2C3F-43B9-9D70-DCCA3A7E710D", DirtyFlagTrigger = DirtyFlagTrigger.Animated)]
-        public readonly TimeClipSlot<Dict<float>> CCEvents = new();
+        public readonly TimeClipSlot<Dict<string, float>> CCEvents = new();
         
         [Output(Guid = "AADD9189-0086-42D6-AC45-D694270C0252")]
         public readonly Slot<float> DeltaTicksPerQuarterNote = new();
@@ -47,14 +41,9 @@ namespace T3.Operators.Types.Id_a3ceb788_4055_4556_961b_63b7221f93e7
             CCEvents.UpdateAction = Update;
 
             CurrentNoteEvents.Value = new(0f);
-            CCEvents.Value = new Dict<float>(0f);
+            CCEvents.Value = new Dict<string, float>(0f);
             NoteOnEvents.Value = new(0f);
             NoteOffEvents.Value = new(0f);
-        }
-        protected override void Dispose(bool isDisposing)
-        {
-            //if (!isDisposing)
-            //    return;
         }
 
         private void Update(EvaluationContext context)
@@ -76,7 +65,6 @@ namespace T3.Operators.Types.Id_a3ceb788_4055_4556_961b_63b7221f93e7
 
                 _printLogMessages = PrintLogMessages.GetValue(context);
                 
-
                 // Get scaled time range of clip
                 var timeRange = Values.TimeClip.TimeRange;
                 var sourceRange = Values.TimeClip.SourceRange;
@@ -120,21 +108,19 @@ namespace T3.Operators.Types.Id_a3ceb788_4055_4556_961b_63b7221f93e7
 
                 if (someTrackChanged)
                 {
-                    Log.Debug("Midi changed!!!!");
                     Values.Value = _midiEvents;
                     Values.DirtyFlag.SetUpdated();
                     Values.DirtyFlag.Invalidate();
                 }
                 
-
-                string timeLog = $"Context LocalTime: {context.LocalTime}\n" +
-                                 $"TimeRange: {timeRange.Start} -> {timeRange.End}\n" +
-                                 $"SourceRange: {sourceRange.Start} -> {sourceRange.End}\n" +
-                                 $"OG bars: {context.LocalTime - timeRange.Start}\n" +
-                                 $"bars: {bars}\n" +
-                                 $"rewound: {rewound}\n" +
-                                 $"inrange: {inRange}\n" +
-                                 $"someTrackChanged: {someTrackChanged}";
+                //string timeLog = $"Context LocalTime: {context.LocalTime}\n" +
+                //                 $"TimeRange: {timeRange.Start} -> {timeRange.End}\n" +
+                //                 $"SourceRange: {sourceRange.Start} -> {sourceRange.End}\n" +
+                //                 $"OG bars: {context.LocalTime - timeRange.Start}\n" +
+                //                 $"bars: {bars}\n" +
+                //                 $"rewound: {rewound}\n" +
+                //                 $"inrange: {inRange}\n" +
+                //                 $"someTrackChanged: {someTrackChanged}";
                 
                 //Log.Debug(timeLog);
             }
@@ -170,14 +156,17 @@ namespace T3.Operators.Types.Id_a3ceb788_4055_4556_961b_63b7221f93e7
 
         private void ClearTracks()
         {
-            _lastTrackEventIndices = Enumerable.Repeat(-1, _midiFile.Tracks).ToList();
-            
             CurrentNoteEvents.Value.Clear();
 
             foreach (var k in _midiEvents.Keys)
             {
                 _midiEvents[k] = 0;
             }
+            
+            if (_midiFile is null)
+                return;
+            _lastTrackEventIndices = Enumerable.Repeat(-1, _midiFile.Tracks).ToList();
+            
         }
 
         private bool UpdateTracks(double bars)
@@ -325,7 +314,7 @@ namespace T3.Operators.Types.Id_a3ceb788_4055_4556_961b_63b7221f93e7
         private double _deltaTicksPerQuarterNote = 500000.0 / 60;
 
         // Output data
-        private readonly Dict<float> _midiEvents = new(0f);
+        private readonly Dict<string, float> _midiEvents = new(0f);
 
         // Parsing the file
         private TimeSignatureEvent _timeSignature = null;
