@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using T3.Core.DataTypes.Vector;
+using Texture2D = SharpDX.Direct3D11.Texture2D;
+using Texture3D = SharpDX.Direct3D11.Texture3D;
 
 namespace T3.Core.Resource;
 

@@ -15,6 +15,8 @@ using T3.Core.Logging;
 using T3.Core.Resource.Dds;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
+using Texture2D = SharpDX.Direct3D11.Texture2D;
+using Texture3D = SharpDX.Direct3D11.Texture3D;
 
 // ReSharper disable RedundantNameQualifier
 // ReSharper disable RedundantAssignment
@@ -35,11 +37,6 @@ namespace T3.Core.Resource
         public static ResourceManager Instance()
         {
             return _instance;
-        }
-
-        public T GetResource<T>(uint resourceId) where T : AbstractResource
-        {
-            return (T)ResourcesById[resourceId];
         }
 
         public OperatorResource GetOperatorFileResource(string path)
@@ -75,13 +72,10 @@ namespace T3.Core.Resource
             }
         }
 
-        public const uint NullResource = 0;
+        private const uint NullResource = 0;
         private uint _resourceIdCounter = 1;
 
-        internal uint GetNextResourceId()
-        {
-            return _resourceIdCounter++;
-        }
+        private uint GetNextResourceId() => _resourceIdCounter++;
 
         public static void Init(Device device)
         {
@@ -407,40 +401,6 @@ namespace T3.Core.Resource
             {
                 Log.Info($"Info: couldn't access file '{filename}': {e.Message}.");
             }
-        }
-
-        public uint GetIdForTexture(Texture2D texture)
-        {
-            if (texture == null)
-                return NullResource;
-
-            foreach (var (id, resourceEntry) in ResourcesById)
-            {
-                if (resourceEntry is Texture2dResource textureResource)
-                {
-                    if (textureResource.Texture == texture)
-                        return id;
-                }
-            }
-
-            return NullResource;
-        }
-
-        public uint GetIdForTexture(Texture3D texture)
-        {
-            if (texture == null)
-                return NullResource;
-
-            foreach (var (id, resourceEntry) in ResourcesById)
-            {
-                if (resourceEntry is Texture3dResource textureResource)
-                {
-                    if (textureResource.Texture == texture)
-                        return id;
-                }
-            }
-
-            return NullResource;
         }
 
         public void CreateShaderResourceView(uint textureId, string name, ref ShaderResourceView shaderResourceView)
