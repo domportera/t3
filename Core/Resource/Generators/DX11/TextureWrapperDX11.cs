@@ -4,7 +4,7 @@ using T3.Core.Resource.ShaderInputs;
 
 namespace T3.Core.Resource.Generators.DX11;
 
-class TextureWrapperDX11 : ITexture, IDisposable
+class TextureWrapperDX11 : Texture, IDisposable
 {
     public TextureDescription Description { get; }
     
@@ -21,7 +21,7 @@ class TextureWrapperDX11 : ITexture, IDisposable
         Description = description;
     }
     
-    public void Dispose()
+    public override void Dispose()
     {
         if (_disposed)
             return;
@@ -30,7 +30,7 @@ class TextureWrapperDX11 : ITexture, IDisposable
         _texture.Dispose();
     }
 
-    public object GetShaderView(bool unorderedReadWrite)
+    public override object GetShaderView(bool unorderedReadWrite)
     {
         // todo: UAV options, SRV options
          if(unorderedReadWrite)
@@ -42,5 +42,5 @@ class TextureWrapperDX11 : ITexture, IDisposable
     private readonly SharpDX.Direct3D11.Resource _texture;
     private UnorderedAccessView _uav;
     private ShaderResourceView _srv;
-    bool _disposed = false;
+    bool _disposed;
 }

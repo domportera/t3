@@ -12,7 +12,7 @@ namespace T3.Core.Resource.Generators.DX11;
 
 public partial class DX11ResourceGenerator
 {
-    public override ITexture CreateTexture(TextureDescription description)
+    public override Texture CreateTexture(TextureDescription description)
     {
         TextureWrapperDX11 textureWrapperDx11;
         if (description is { Dimensions: 3, DepthAsArray: false })
@@ -38,7 +38,7 @@ public partial class DX11ResourceGenerator
         return textureWrapperDx11;
     }
 
-    public override ITexture CreateTexture(string filePath)
+    public override Texture CreateTexture(string filePath)
     {
         SharpDX.Direct3D11.Texture2D texture = null;
         ShaderResourceView srv = null;

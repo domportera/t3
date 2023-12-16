@@ -6,41 +6,33 @@ using T3.Core.Resource.Generators;
 
 namespace T3.Core.Resource.ShaderInputs;
 
-public interface ITexture : IGpuResource
+public abstract class Texture : GpuResource
 {
     public TextureDescription Description { get; }
 }
 
-public interface IConstantBuffer : IGpuResource
+public abstract class Buffer<T> : GpuResource where T : unmanaged
 {
-    public int SizeInBytes { get; }
-    public Span<byte> GetSpan();
+    public int SizeInBytes => Size;
+    public ReadOnlySpan<byte> Bytes => _dataByteArray;
 
-    public byte this[int index]
+    public T Data
     {
-        get => GetSpan()[index];
-        set => GetSpan()[index] = value;
-    }
-    
-    public unsafe void SetData<T>(in T data) where T : unmanaged
-    {
-        var size = Marshal.SizeOf<T>();
-        if (size != SizeInBytes)
-            throw new ArgumentException($"Size of data ({Unsafe.SizeOf<T>()}) does not match size of buffer ({SizeInBytes})");
-
-        var bufferSpan = GetSpan();
-        fixed (T* ptr = &data)
+        get => Unsafe.As<byte, T>(ref _dataByteArray[0]);
+        set
         {
-            var dataPtr = (byte*)ptr;
-            
-            // copy bytes from data to this buffer
-            for (var i = 0; i < size; i++)
-                bufferSpan[i] = dataPtr[i];
+            Unsafe.As<byte, T>(ref _dataByteArray[0]) = value;
+            SetDataInternal(_dataByteArray, in value);
         }
     }
+    
+    protected abstract void SetDataInternal(ReadOnlySpan<byte> data, in T value);
+
+    private readonly byte[] _dataByteArray = new byte[Size];
+    private static readonly int Size = Marshal.SizeOf<T>();
 }
 
-public interface IStructuredBuffer<T> : IGpuResource where T : unmanaged
+public abstract class IStructuredBuffer<T> : GpuResource where T : unmanaged
 {
     // index operator
     public T this[int index]
@@ -49,7 +41,7 @@ public interface IStructuredBuffer<T> : IGpuResource where T : unmanaged
         set => GetSpan()[index] = value;
     }
     
-    public Span<T> GetSpan();
+    public abstract Span<T> GetSpan();
     public int Count { get; }
     public int Stride => Marshal.SizeOf<T>();
     
@@ -78,7 +70,8 @@ public interface IStructuredBuffer<T> : IGpuResource where T : unmanaged
     public Type DataType => typeof(T);
 }
 
-public interface IGpuResource : IDisposable
+public abstract class GpuResource : IDisposable
 {
-    public object GetShaderView(bool unorderedReadWrite);
+    public abstract object GetShaderView(bool unorderedReadWrite);
+    public abstract void Dispose();
 }
