@@ -32,7 +32,7 @@ public abstract class Buffer<T> : GpuResource where T : unmanaged
     private static readonly int Size = Marshal.SizeOf<T>();
 }
 
-public abstract class IStructuredBuffer<T> : GpuResource where T : unmanaged
+public abstract class StructuredBuffer<T> : GpuResource where T : unmanaged
 {
     // index operator
     public T this[int index]
@@ -40,10 +40,11 @@ public abstract class IStructuredBuffer<T> : GpuResource where T : unmanaged
         get => GetSpan()[index];
         set => GetSpan()[index] = value;
     }
-    
-    public abstract Span<T> GetSpan();
-    public int Count { get; }
-    public int Stride => Marshal.SizeOf<T>();
+
+    protected abstract Span<T> GetSpan();
+    public abstract void ApplyToBuffer();
+    public int Count => GetSpan().Length;
+    public int Stride = Marshal.SizeOf<T>();
     
     public void SetData(params T[] data) => SetData((ReadOnlySpan<T>)data);
 
@@ -67,7 +68,7 @@ public abstract class IStructuredBuffer<T> : GpuResource where T : unmanaged
             span[i] = data[i];
     }
 
-    public Type DataType => typeof(T);
+    public Type DataType { get; } = typeof(T);
 }
 
 public abstract class GpuResource : IDisposable

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using SharpDX;
 using SharpDX.Direct3D11;
@@ -23,26 +24,94 @@ public partial class DX11ResourceGenerator : ResourceGenerator
 
     public override Buffer<T> CreateBuffer<T>(in T defaultValue, BufferFlags flags)
     {
-        return new BufferDx11<T>(_device, defaultValue, flags);
+        var description = new BufferDescription()
+                              {
+                                  Usage = ResourceUsage.Default,
+                                  SizeInBytes = Marshal.SizeOf<T>(),
+                                  BindFlags = BindFlags.ConstantBuffer
+                              };
+
+        return new BufferDx11<T>(_device, defaultValue, description);
     }
 
-    public override IStructuredBuffer<T> CreateStructuredBuffer<T>(in StructuredBufferDescriptor description, T[] data)
+    public override StructuredBuffer<T> CreateStructuredBuffer<T>(in StructuredBufferDescriptor description, T[] data)
     {
-        throw new System.NotImplementedException();
+        var stride = Marshal.SizeOf<T>();
+        var bufferDesc = new BufferDescription
+                             {
+                                 Usage = ResourceUsage.Default,
+                                 BindFlags = BindFlags.UnorderedAccess | BindFlags.ShaderResource,
+                                 SizeInBytes = stride * description.Count,
+                                 OptionFlags = ResourceOptionFlags.BufferStructured,
+                                 StructureByteStride = stride
+                             };
+
+        return new StructuredBufferDx11<T>(_device, data, bufferDesc);
     }
 
     private readonly Device _device;
     internal Device Device => _device;
 }
 
+class StructuredBufferDx11<T> : StructuredBuffer<T> where T : unmanaged
+{
+    public StructuredBufferDx11(Device device, T[] data, in BufferDescription description)
+    {
+        _data = data;
+        _dataStream = new DataStream(data.Length * description.StructureByteStride, true, true);
+        _dataStream.WriteRange(data);
+        _dataStream.Position = 0;
+        _buffer = new Buffer(device, _dataStream, description);
+    }
+
+    public override object GetShaderView(bool unorderedReadWrite)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void ApplyToBuffer()
+    {
+        if (_disposed)
+            throw new ObjectDisposedException(nameof(BufferDx11<T>));
+
+        var bytes = Unsafe.As<byte[]>(_data);
+        _dataStream.Position = 0;
+        _dataStream.Write(bytes, 0, bytes.Length);
+        _dataStream.Position = 0;
+
+        // todo - defer this to a later point in time? (e.g. when the buffer is actually used)?
+        var device = DX11ResourceGenerator.Instance.Device;
+        var context = device.ImmediateContext;
+        var dataBox = new DataBox(_dataStream.DataPointer, 0, 0);
+        context.UpdateSubresource(dataBox, _buffer);
+    }
+
+    public override void Dispose()
+    {
+        if (_disposed)
+            return;
+        _disposed = true;
+
+        _buffer.Dispose();
+        _dataStream.Dispose();
+    }
+
+    protected override Span<T> GetSpan() => _data.AsSpan();
+
+    private readonly T[] _data;
+    private readonly DataStream _dataStream;
+    private readonly Buffer _buffer;
+    private bool _disposed;
+}
+
 class BufferDx11<T> : Buffer<T> where T : unmanaged
 {
-    public BufferDx11(Device device, in T value, BufferFlags flags)
+    public BufferDx11(Device device, in T value, in BufferDescription description)
     {
-        _dataStream = new DataStream(Size, true, true);
+        _dataStream = new DataStream(description.SizeInBytes, true, true);
         _dataStream.Write(value);
         _dataStream.Position = 0;
-        _buffer = new Buffer(device, _dataStream, DefaultBufferDescription);
+        _buffer = new Buffer(device, _dataStream, description);
     }
 
     public override object GetShaderView(bool unorderedReadWrite)
@@ -65,13 +134,13 @@ class BufferDx11<T> : Buffer<T> where T : unmanaged
 
     protected override void SetDataInternal(ReadOnlySpan<byte> _, in T value)
     {
-        if(_disposed)
+        if (_disposed)
             throw new ObjectDisposedException(nameof(BufferDx11<T>));
-        
+
         _dataStream.Position = 0;
         _dataStream.Write(value);
         _dataStream.Position = 0;
-        
+
         // todo - defer this to a later point in time? (e.g. when the buffer is actually used)?
         var device = DX11ResourceGenerator.Instance.Device;
         var context = device.ImmediateContext;
@@ -80,12 +149,4 @@ class BufferDx11<T> : Buffer<T> where T : unmanaged
     }
 
     private bool _disposed = false;
-
-    private static readonly int Size = Marshal.SizeOf<T>();
-    private static readonly BufferDescription DefaultBufferDescription = new()
-                                                                             {
-                                                                                 Usage = ResourceUsage.Default,
-                                                                                 SizeInBytes = Size,
-                                                                                 BindFlags = BindFlags.ConstantBuffer
-                                                                             };
 }

@@ -25,15 +25,7 @@ namespace T3.Operators.Types.Id_5a88fa27_16ad_454f_a08d_5e65dd75cefe
             if (sizeInBytes <= 0)
                 return;
 
-            var bufferDesc = new BufferDescription
-                             {
-                                 Usage = ResourceUsage.Default,
-                                 BindFlags = BindFlags.UnorderedAccess | BindFlags.ShaderResource,
-                                 SizeInBytes = sizeInBytes,
-                                 OptionFlags = ResourceOptionFlags.DrawIndirectArguments,
-                                 StructureByteStride = stride
-                             };
-            ResourceManager.SetupBuffer(bufferDesc, ref Buffer.Value);
+            ResourceManager.SetupIndirectBuffer(sizeInBytes, ref Buffer.Value, stride);
         }
 
         [Input(Guid = "38D649D2-861B-4302-A879-973D6405A4DE")]

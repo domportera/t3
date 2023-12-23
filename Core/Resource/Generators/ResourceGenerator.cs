@@ -8,7 +8,7 @@ public abstract class ResourceGenerator
     public abstract Texture CreateTexture(TextureDescription description);
     public abstract Texture CreateTexture(string filePath);
     public abstract Buffer<T> CreateBuffer<T>(in T defaultValue, BufferFlags flags) where T : unmanaged;
-    public abstract IStructuredBuffer<T> CreateStructuredBuffer<T>(in StructuredBufferDescriptor description, T[] data) where T : unmanaged;
+    public abstract StructuredBuffer<T> CreateStructuredBuffer<T>(in StructuredBufferDescriptor description, T[] data) where T : unmanaged;
 }
 
 public readonly struct StructuredBufferDescriptor

@@ -130,12 +130,7 @@ namespace T3.Core.Resource
             }
         }
 
-        public static void SetupBuffer(BufferDescription bufferDesc, ref Buffer buffer)
-        {
-            buffer ??= new Buffer(Device, bufferDesc);
-        }
-
-        public static void SetupIndirectBuffer(int sizeInBytes, ref Buffer buffer)
+        public static void SetupIndirectBuffer(int sizeInBytes, ref Buffer buffer, int stride = 0)
         {
             var bufferDesc = new BufferDescription
                                  {
@@ -143,8 +138,10 @@ namespace T3.Core.Resource
                                      BindFlags = BindFlags.UnorderedAccess | BindFlags.ShaderResource,
                                      SizeInBytes = sizeInBytes,
                                      OptionFlags = ResourceOptionFlags.DrawIndirectArguments,
+                                     StructureByteStride = stride
                                  };
-            SetupBuffer(bufferDesc, ref buffer);
+            
+            buffer ??= new Buffer(Device, bufferDesc);
         }
 
         public static void CreateBufferUav<T>(Buffer buffer, Format format, ref UnorderedAccessView uav)

@@ -6,19 +6,15 @@ namespace T3.Core.Resource.Generators.DX11;
 
 class TextureWrapperDX11 : Texture, IDisposable
 {
-    public TextureDescription Description { get; }
-    
     public TextureWrapperDX11(SharpDX.Direct3D11.Texture2D texture, TextureDescription description, ShaderResourceView srv = null)
     {
         _texture = texture;
-        Description = description;
         _srv = srv;
     }
     
     public TextureWrapperDX11(SharpDX.Direct3D11.Texture3D texture, TextureDescription description)
     {
         _texture = texture;
-        Description = description;
     }
     
     public override void Dispose()
