@@ -9,6 +9,8 @@ using T3.Core.Logging;
 using T3.Core.Model;
 using T3.Core.Operator;
 using T3.Core.Resource;
+using T3.Core.Resource.Generators;
+using T3.Core.Resource.Generators.DX11;
 using T3.Editor.App;
 using T3.Editor.Compilation;
 using T3.Editor.Gui;
@@ -93,6 +95,8 @@ namespace T3.Editor
             ProgramWindows.InitializeMainWindow(GetReleaseVersion(), out var device);
 
             Device = device;
+            var resourceGenerator = new DX11ResourceGenerator(device);
+            ResourceGenerator.Instance = resourceGenerator;
             
             if(ShaderCompiler.Instance is not DX11ShaderCompiler shaderCompiler)
                 throw new Exception("ShaderCompiler is not DX11ShaderCompiler");
@@ -106,7 +110,7 @@ namespace T3.Editor
             CameraInteraction.ManipulationDevices = new ICameraManipulator[] { spaceMouse };
             ProgramWindows.SetInteractionDevices(spaceMouse);
 
-            ResourceManager.Init(device);
+            ResourceManager.Init(device, resourceGenerator);
             ResourceManager resourceManager = ResourceManager.Instance();
             SharedResources.Initialize(resourceManager);
 

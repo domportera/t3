@@ -6,6 +6,7 @@ using SharpDX.DXGI;
 using T3.Core.DataTypes;
 using T3.Core.Operator.Slots;
 using T3.Core.Resource;
+using T3.Core.Resource.ShaderInputs;
 using T3.Editor.App;
 using T3.Editor.Gui.Windows;
 using ComputeShader = SharpDX.Direct3D11.ComputeShader;
@@ -110,7 +111,7 @@ namespace T3.Editor.Gui.OutputUi
         private readonly Texture2D _viewTexture = null;
         private UnorderedAccessView _viewTextureUav = null;
         private int _zPosIndex = 0;
-        private Buffer _paramBuffer = null;
+        private Buffer<Int4> _paramBuffer = null;
         private ShaderResource<ComputeShader> _shaderResource;
     }
 }

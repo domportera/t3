@@ -2,12 +2,13 @@
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using T3.Core.Resource;
+using T3.Core.Resource.ShaderInputs;
 
 namespace T3.Core.Rendering
 {
     public static class FogSettings
     {
-        public static Buffer DefaultSettingsBuffer
+        public static Buffer<FogParameters> DefaultSettingsBuffer
         {
             get
             {
@@ -40,6 +41,6 @@ namespace T3.Core.Rendering
             private const int Stride = 8 * 4;
         }
 
-        private static Buffer _defaultSettingsBuffer = null;
+        private static Buffer<FogParameters> _defaultSettingsBuffer = null;
     }
 }

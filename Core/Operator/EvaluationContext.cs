@@ -6,6 +6,7 @@ using T3.Core.DataTypes;
 using T3.Core.DataTypes.Vector;
 using T3.Core.Operator.Interfaces;
 using T3.Core.Rendering;
+using T3.Core.Resource.ShaderInputs;
 using T3.Core.Utils;
 using T3.Core.Utils.Geometry;
 using Vector3 = System.Numerics.Vector3;
@@ -93,7 +94,7 @@ namespace T3.Core.Operator
         
         
         // Render settings
-        public Buffer FogParameters { get; set; } = FogSettings.DefaultSettingsBuffer;
+        public Buffer<FogSettings.FogParameters> FogParameters { get; set; } = FogSettings.DefaultSettingsBuffer;
         public Buffer PbrMaterialParams { get; set; }
         public PbrMaterialTextures PbrMaterialTextures { get; set; } = new PbrMaterialTextures();
         

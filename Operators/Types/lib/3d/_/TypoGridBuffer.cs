@@ -1,17 +1,19 @@
 ﻿using System.Numerics;
 using System.Runtime.InteropServices;
+using SharpDX.Direct3D11;
 using T3.Core.DataTypes.Vector;
 using T3.Core.Operator;
 using T3.Core.Operator.Attributes;
 using T3.Core.Operator.Slots;
 using T3.Core.Resource;
+using T3.Core.Resource.ShaderInputs;
 
 namespace T3.Operators.Types.Id_fa45d013_5a1c_45a0_9b05_a4a4edfb06f9
 {
     public class TypoGridBuffer : Instance<TypoGridBuffer>
     {
         [Output(Guid = "{6e6e8ce0-2b62-41f5-893d-9a20219faf82}")]
-        public readonly Slot<SharpDX.Direct3D11.Buffer> Buffer = new Slot<SharpDX.Direct3D11.Buffer>();
+        public readonly Slot<Buffer> Buffer = new Slot<Buffer>();
 
         [Output(Guid = "{B8CF7AB8-BE34-4C0B-AFFC-CE09748FD6F1}")]
         public readonly Slot<int> VertexCount = new Slot<int>();
@@ -39,9 +41,12 @@ namespace T3.Operators.Types.Id_fa45d013_5a1c_45a0_9b05_a4a4edfb06f9
             var textCycle = (int)textOffset.X + (int)(textOffset.Y) * columns;
 
             var size = rows * columns;
-            if (_bufferContent == null || _bufferContent.Length != size)
+            if (_bufferContent == null || _bufferContent.Count != size)
             {
-                _bufferContent = new BufferLayout[size];
+                _bufferContent?.Dispose();
+                var content = new BufferLayout[size];
+                ResourceManager.SetupStructuredBuffer(content, ref _bufferContent);
+                Buffer.Value = (Buffer)_bufferContent.NativeBuffer;
             }
             
             var index = 0;
@@ -78,14 +83,14 @@ namespace T3.Operators.Types.Id_fa45d013_5a1c_45a0_9b05_a4a4edfb06f9
                     index++;
                 }
             }
-            
-            ResourceManager.SetupStructuredBuffer(_bufferContent, ref Buffer.Value);
+
             Buffer.Value.DebugName = nameof(TypoGridBuffer);
 
             VertexCount.Value = size * 6;
         }
 
-        private BufferLayout[] _bufferContent;
+        private StructuredBuffer<BufferLayout> _bufferContent;
+
 
         [StructLayout(LayoutKind.Explicit, Size = 32)]
         public struct BufferLayout

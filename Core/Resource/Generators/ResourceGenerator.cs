@@ -5,20 +5,31 @@ namespace T3.Core.Resource.Generators;
 
 public abstract class ResourceGenerator
 {
+    private static ResourceGenerator _instance;
+    public static ResourceGenerator Instance
+    {
+        get => _instance;
+        set
+        {
+            if(_instance != null)
+                throw new Exception("ResourceGenerator already created");
+            
+            _instance = value;
+        }
+    }
+
     public abstract Texture CreateTexture(TextureDescription description);
     public abstract Texture CreateTexture(string filePath);
-    public abstract Buffer<T> CreateBuffer<T>(in T defaultValue, BufferFlags flags) where T : unmanaged;
+    public abstract Buffer<T> CreateBuffer<T>(in T defaultValue, bool indirect) where T : unmanaged;
     public abstract StructuredBuffer<T> CreateStructuredBuffer<T>(in StructuredBufferDescriptor description, T[] data) where T : unmanaged;
 }
 
 public readonly struct StructuredBufferDescriptor
 {
-    public readonly int Count;
     public readonly StructuredBufferFlags BufferFlags;
 
-    public StructuredBufferDescriptor( int count, StructuredBufferFlags bufferFlags)
+    public StructuredBufferDescriptor(StructuredBufferFlags bufferFlags)
     {
-        Count = count;
         BufferFlags = bufferFlags;
     }
 }

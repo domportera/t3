@@ -17,12 +17,8 @@ class TextureWrapperDX11 : Texture, IDisposable
         _texture = texture;
     }
     
-    public override void Dispose()
+    public override void DisposeObjects()
     {
-        if (_disposed)
-            return;
-        
-        _disposed = true;
         _texture.Dispose();
     }
 
@@ -38,5 +34,4 @@ class TextureWrapperDX11 : Texture, IDisposable
     private readonly SharpDX.Direct3D11.Resource _texture;
     private UnorderedAccessView _uav;
     private ShaderResourceView _srv;
-    bool _disposed;
 }

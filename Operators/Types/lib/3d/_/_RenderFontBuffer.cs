@@ -6,6 +6,7 @@ using T3.Core.Operator;
 using T3.Core.Operator.Attributes;
 using T3.Core.Operator.Slots;
 using T3.Core.Resource;
+using T3.Core.Resource.ShaderInputs;
 using T3.Core.Utils;
 
 namespace T3.Operators.Types.Id_c5707b79_859b_4d53_92e0_cbed53aae648
@@ -84,7 +85,9 @@ namespace T3.Operators.Types.Id_c5707b79_859b_4d53_92e0_cbed53aae648
 
             if (_bufferContent == null || _bufferContent.Length != text.Length)
             {
-                _bufferContent = new BufferLayout[text.Length];
+                var content = new BufferLayout[text.Length];
+                _bufferContent?.Dispose();
+                ResourceManager.SetupStructuredBuffer(content, ref _bufferContent);
             }
 
             var outputIndex = 0;
@@ -160,7 +163,6 @@ namespace T3.Operators.Types.Id_c5707b79_859b_4d53_92e0_cbed53aae648
             }
             AdjustLineAlignment();
 
-            ResourceManager.SetupStructuredBuffer(_bufferContent, ref Buffer.Value);
             Buffer.Value.DebugName = nameof(_RenderFontBuffer);
             VertexCount.Value = outputIndex * 6;
 
@@ -185,13 +187,15 @@ namespace T3.Operators.Types.Id_c5707b79_859b_4d53_92e0_cbed53aae648
                 var index0 = outputIndex - backIndex;
                 if (index0 < 0 || index0 >= _bufferContent.Length)
                     continue;
-                
-                _bufferContent[index0].Position.X -= offset;
+
+                var item = _bufferContent[index0];
+                item.Position.X -= offset;
+                _bufferContent[index0] = item;
             }
         }
 
         private BmFontDescription _font;
-        private BufferLayout[] _bufferContent;
+        private StructuredBuffer<BufferLayout> _bufferContent;
 
         [StructLayout(LayoutKind.Explicit, Size = StructSize)]
         public struct BufferLayout
