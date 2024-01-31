@@ -1,43 +1,19 @@
+using System;
 using System.Collections.Generic;
+
 // ReSharper disable ConvertToAutoProperty
 
 namespace T3.Core.Operator.Slots
 {
-    public sealed class MultiInputSlot<T> : InputSlot<T>, IMultiInputSlot
+    //todo: make this an InputSlot<T[]>?
+    public sealed class MultiInputSlot<T>(Type type) : MultiInputSlot(type)
     {
-        public List<Slot<T>> CollectedInputs => _collectedInputs;
-        private readonly List<Slot<T>> _collectedInputs = new(10);
+        public override bool IsConnected => _inputConnectionsTyped.Count > 0;
+        public override IReadOnlyList<OutputSlot> InputConnections => _inputConnectionsTyped;
 
-        public List<Slot<T>> GetCollectedTypedInputs()
+        public void GetValues(ref T[] resources, EvaluationContext context, bool clearDirty = true)
         {
-            _collectedInputs.Clear();
-
-            foreach (var slot in InputConnections)
-            {
-                if (slot.TryGetAsMultiInputTyped(out var multiInput) && slot.IsConnected)
-                {
-                    _collectedInputs.AddRange(multiInput.GetCollectedTypedInputs());
-                }
-                else
-                {
-                    _collectedInputs.Add(slot);
-                }
-            }
-
-            return _collectedInputs;
-        }
-
-        public IReadOnlyList<ISlot> GetCollectedInputs()
-        {
-            return GetCollectedTypedInputs();
-        }
-
-        List<int> IMultiInputSlot.LimitMultiInputInvalidationToIndices => LimitMultiInputInvalidationToIndices;
-        public readonly List<int> LimitMultiInputInvalidationToIndices = [];
-
-        public void GetValues(ref T[] resources, EvaluationContext context, bool clearDirty= true)
-        {
-            var connectedInputs = GetCollectedTypedInputs();
+            var connectedInputs = _inputConnectionsTyped;
             if (connectedInputs.Count != resources.Length)
             {
                 resources = new T[connectedInputs.Count];
@@ -47,9 +23,57 @@ namespace T3.Core.Operator.Slots
             {
                 resources[i] = connectedInputs[i].GetValue(context);
             }
-            
-            if(clearDirty)
+
+            if (clearDirty)
                 DirtyFlag.Clear();
         }
+
+        public override int Invalidate()
+        {
+            if (AlreadyInvalidated(out var dirtyFlag))
+                return dirtyFlag.Target;
+
+            if (!IsConnected)
+            {
+                if (dirtyFlag.Trigger != DirtyFlagTrigger.None)
+                    dirtyFlag.Invalidate();
+                
+                return dirtyFlag.Target;
+            }
+
+            var totalTarget = 0;
+            bool outputDirty = dirtyFlag.IsDirty;
+
+            if (LimitMultiInputInvalidationToIndices.Count > 0)
+            {
+                foreach (var index in LimitMultiInputInvalidationToIndices)
+                {
+                    if (_inputConnectionsTyped.Count <= index)
+                        continue;
+
+                    var outputSlot = _inputConnectionsTyped[index];
+                    totalTarget += outputSlot.Invalidate();
+                    outputDirty |= outputSlot.DirtyFlag.IsDirty;
+                }
+            }
+            else
+            {
+                foreach (var outputSlot in _inputConnectionsTyped)
+                {
+                    totalTarget += outputSlot.Invalidate();
+                    outputDirty |= outputSlot.DirtyFlag.IsDirty;
+                }
+            }
+
+            if (outputDirty || (dirtyFlag.Trigger & DirtyFlagTrigger.Animated) == DirtyFlagTrigger.Animated)
+            {
+                dirtyFlag.Invalidate();
+            }
+
+            dirtyFlag.SetVisited();
+            return dirtyFlag.Target;
+        }
+
+        private readonly List<Slot<T>> _inputConnectionsTyped = new(10);
     }
 }
