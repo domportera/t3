@@ -18,7 +18,7 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
         _isConnected = false;
     }
 
-    public override int Invalidate()
+    public sealed override int Invalidate()
     {
         if (AlreadyInvalidated(out var dirtyFlag))
             return dirtyFlag.Target;

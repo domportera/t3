@@ -96,54 +96,5 @@ namespace T3.Core.Operator.Slots
 
             _isDisabled = isDisabled;
         }
-
-        public override int Invalidate()
-        {
-            // ReSharper disable once InlineTemporaryVariable
-            var dirtyFlag = DirtyFlag;
-            if (dirtyFlag.IsAlreadyInvalidated || dirtyFlag.HasBeenVisited)
-                return dirtyFlag.Target;
-
-            // Slot is an output of an composition op
-            if (IsConnected)
-            {
-                dirtyFlag.Target = FirstConnection.Invalidate();
-            }
-            else
-            {
-                if (LastUpdateStatus == UpdateStates.Suspended)
-                {
-                    dirtyFlag.Invalidate();
-                }
-                else
-                {
-                    var parentInstance = Parent;
-                    var isOutputDirty = dirtyFlag.IsDirty;
-                    foreach (var inputSlot in parentInstance.Inputs)
-                    {
-                        var inputDirtyFlag = inputSlot.DirtyFlag;
-                        if (inputSlot.IsConnected)
-                        {
-                            inputDirtyFlag.Target = inputSlot.FirstConnection.Invalidate();
-                        }
-                        else if ((inputDirtyFlag.Trigger & DirtyFlagTrigger.Animated) == DirtyFlagTrigger.Animated)
-                        {
-                            inputDirtyFlag.Invalidate();
-                        }
-
-                        inputDirtyFlag.SetVisited();
-                        isOutputDirty |= inputDirtyFlag.IsDirty;
-                    }
-
-                    if (isOutputDirty || (dirtyFlag.Trigger & DirtyFlagTrigger.Animated) == DirtyFlagTrigger.Animated)
-                    {
-                        dirtyFlag.Invalidate();
-                    }
-                }
-            }
-
-            dirtyFlag.SetVisited();
-            return dirtyFlag.Target;
-        }
     }
 }
