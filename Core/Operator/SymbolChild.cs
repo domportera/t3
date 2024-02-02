@@ -200,7 +200,7 @@ namespace T3.Core.Operator
                 
                 switch (mainOutputSlot)
                 {
-                    case Slot<Command> commandOutput when mainInputSlot is Slot<Command> commandInput:
+                    case Slot<Command> commandOutput when mainInputSlot is InputSlot<Command> commandInput:
                         if (shouldBypass)
                         {
                             wasByPassed= commandOutput.TrySetBypassToInput(commandInput);
@@ -211,7 +211,7 @@ namespace T3.Core.Operator
                         }
                         break;
                     
-                    case Slot<BufferWithViews> bufferOutput when mainInputSlot is Slot<BufferWithViews> bufferInput:
+                    case Slot<BufferWithViews> bufferOutput when mainInputSlot is InputSlot<BufferWithViews> bufferInput:
                         if (shouldBypass)
                         {
                             wasByPassed= bufferOutput.TrySetBypassToInput(bufferInput);
@@ -221,7 +221,7 @@ namespace T3.Core.Operator
                             bufferOutput.RestoreUpdateAction();
                         }
                         break;
-                    case Slot<MeshBuffers> bufferOutput when mainInputSlot is Slot<MeshBuffers> bufferInput:
+                    case Slot<MeshBuffers> bufferOutput when mainInputSlot is InputSlot<MeshBuffers> bufferInput:
                         if (shouldBypass)
                         {
                             wasByPassed= bufferOutput.TrySetBypassToInput(bufferInput);
@@ -231,7 +231,7 @@ namespace T3.Core.Operator
                             bufferOutput.RestoreUpdateAction();
                         }
                         break;
-                    case Slot<Texture2D> texture2dOutput when mainInputSlot is Slot<Texture2D> texture2dInput:
+                    case Slot<Texture2D> texture2dOutput when mainInputSlot is InputSlot<Texture2D> texture2dInput:
                         if (shouldBypass)
                         {
                             wasByPassed= texture2dOutput.TrySetBypassToInput(texture2dInput);
@@ -241,7 +241,7 @@ namespace T3.Core.Operator
                             texture2dOutput.RestoreUpdateAction();
                         }
                         break;
-                    case Slot<float> floatOutput when mainInputSlot is Slot<float> floatInput:
+                    case Slot<float> floatOutput when mainInputSlot is InputSlot<float> floatInput:
                         if (shouldBypass)
                         {
                             wasByPassed= floatOutput.TrySetBypassToInput(floatInput);
@@ -252,7 +252,7 @@ namespace T3.Core.Operator
                         }
                         break;
                     
-                    case Slot<Vector2> vec2Output when mainInputSlot is Slot<Vector2> vec2Input:
+                    case Slot<Vector2> vec2Output when mainInputSlot is InputSlot<Vector2> vec2Input:
                         if (shouldBypass)
                         {
                             wasByPassed= vec2Output.TrySetBypassToInput(vec2Input);
@@ -262,7 +262,7 @@ namespace T3.Core.Operator
                             vec2Output.RestoreUpdateAction();
                         }
                         break;
-                    case Slot<Vector3> vec3Output when mainInputSlot is Slot<Vector3> vec3Input:
+                    case Slot<Vector3> vec3Output when mainInputSlot is InputSlot<Vector3> vec3Input:
                         if (shouldBypass)
                         {
                             wasByPassed= vec3Output.TrySetBypassToInput(vec3Input);
@@ -272,7 +272,7 @@ namespace T3.Core.Operator
                             vec3Output.RestoreUpdateAction();
                         }
                         break;
-                    case Slot<string> stringOutput when mainInputSlot is Slot<string> stringInput:
+                    case Slot<string> stringOutput when mainInputSlot is InputSlot<string> stringInput:
                         if (shouldBypass)
                         {
                             wasByPassed= stringOutput.TrySetBypassToInput(stringInput);

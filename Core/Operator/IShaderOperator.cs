@@ -117,7 +117,7 @@ public interface IShaderOperator<T> where T : class, IDisposable
             }
         }
 
-        static bool TryCreateResource(string source, string entryPoint, string debugName, bool isSourceCode, ISlot shaderSlot, Instance instance,
+        static bool TryCreateResource(string source, string entryPoint, string debugName, bool isSourceCode, OutputSlot shaderSlot, Instance instance,
                                       out string errorMessage, out ShaderResource<T> shaderResource)
         {
             bool updated;

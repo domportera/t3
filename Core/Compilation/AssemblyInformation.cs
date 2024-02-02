@@ -166,13 +166,13 @@ public class AssemblyInformation
 
         var bindFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
         var slots = type.GetFields(bindFlags)
-                        .Where(field => field.FieldType.IsAssignableTo(typeof(ISlot)));
+                        .Where(field => field.FieldType.IsAssignableTo(typeof(SlotBase)));
 
         List<InputSlotInfo> inputFields = new();
         List<OutputSlotInfo> outputFields = new();
         foreach (var field in slots)
         {
-            if (field.FieldType.IsAssignableTo(typeof(IInputSlot)))
+            if (field.FieldType.IsAssignableTo(typeof(InputSlot)))
             {
                 var inputAttribute = field.GetCustomAttribute<InputAttribute>();
                 if(inputAttribute is not null)

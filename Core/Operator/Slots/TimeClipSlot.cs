@@ -79,12 +79,9 @@ namespace T3.Core.Operator.Slots
 
         protected override void SetDisabled(bool isDisabled)
         {
-            if (isDisabled == _isDisabled)
-                return;
-
             if (isDisabled)
             {
-                _keepOriginalUpdateAction = _baseUpdateAction;
+                KeepOriginalUpdateAction = _baseUpdateAction;
                 base.UpdateAction = EmptyAction;
                 DirtyFlag.Invalidate();
             }
@@ -93,8 +90,6 @@ namespace T3.Core.Operator.Slots
                 RestoreUpdateAction();
                 DirtyFlag.Invalidate();
             }
-
-            _isDisabled = isDisabled;
         }
     }
 }

@@ -10,9 +10,9 @@ namespace T3.Core.Operator.Interfaces
         // System.Numerics.Vector3 Rotation { get; set; }
         // System.Numerics.Vector3 Scale { get; set; }
         
-        IInputSlot TranslationInput { get; }
-        IInputSlot RotationInput { get;  }
-        IInputSlot ScaleInput { get;  }
+        InputSlot TranslationInput { get; }
+        InputSlot RotationInput { get;  }
+        InputSlot ScaleInput { get;  }
         
         Action<Instance, EvaluationContext> TransformCallback { get; set; }
     }

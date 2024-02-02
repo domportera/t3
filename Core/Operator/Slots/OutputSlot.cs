@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 
@@ -8,14 +9,16 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
 {
     public sealed override bool IsConnected => _isConnected;
 
-    public void AddConnection(InputSlot _)
+    public void AddConnection(InputSlot input)
     {
         _isConnected = true;
+        _connectedInput = input;
     }
 
     public void RemoveConnection()
     {
         _isConnected = false;
+        _connectedInput = null;
     }
 
     public sealed override int Invalidate()
@@ -34,15 +37,52 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
         {
             dirtyFlag.Invalidate();
         }
-
+        
         dirtyFlag.SetVisited();
         return dirtyFlag.Target;
     }
-
+    
+    public InputSlot ConnectedSlot => _connectedInput;
+    public InputSlot LinkSlot { get; set; }
+    private InputSlot _connectedInput;
+    public override SlotBase FirstConnectedSlot => _connectedInput;
     private bool _isConnected;
 }
 
-public sealed class Slot<T>(T defaultValue = default) : OutputSlot(typeof(T))
+public abstract class MultiOutputSlot(Type type) : OutputSlot(type)
+{
+    
+}
+
+public class MultiOutputSlot<T> : MultiOutputSlot
+{
+    public IReadOnlyList<T> Values => _values;
+    private T[] _values;
+    private MultiInputSlot<T> _targetInputForBypass;
+
+    public MultiOutputSlot(MultiInputSlot<T> targetInputForBypass) : base(typeof(T))
+    {
+        _targetInputForBypass = targetInputForBypass;
+        SetBypassToInput(targetInputForBypass);
+    }
+
+    private void SetBypassToInput(MultiInputSlot<T> slot)
+    {
+        KeepOriginalUpdateAction = UpdateAction;
+        KeepDirtyFlagTrigger = DirtyFlag.Trigger;
+        UpdateAction = ByPassUpdate;
+        DirtyFlag.Invalidate();
+        _targetInputForBypass = slot;
+    }
+
+    private void ByPassUpdate(EvaluationContext context)
+    {
+        _targetInputForBypass.GetValues(ref _values, context);
+    }
+}
+
+
+public class Slot<T>(T defaultValue = default) : OutputSlot(typeof(T))
 {
     public T Value = defaultValue;
 
@@ -54,24 +94,24 @@ public sealed class Slot<T>(T defaultValue = default) : OutputSlot(typeof(T))
 
     public bool TrySetBypassToInput(InputSlot<T> targetSlot)
     {
-        if (_keepOriginalUpdateAction != null)
+        if (KeepOriginalUpdateAction != null)
         {
             //Log.Warning("Already disabled or bypassed");
             return false;
         }
 
-        _keepOriginalUpdateAction = UpdateAction;
-        _keepDirtyFlagTrigger = DirtyFlag.Trigger;
+        KeepOriginalUpdateAction = UpdateAction;
+        KeepDirtyFlagTrigger = DirtyFlag.Trigger;
         UpdateAction = ByPassUpdate;
         DirtyFlag.Invalidate();
         _targetInputForBypass = targetSlot;
         return true;
     }
 
-    void ByPassUpdate(EvaluationContext context)
+    private void ByPassUpdate(EvaluationContext context)
     {
         Value = _targetInputForBypass.GetValue(context);
     }
 
-    private InputSlot<T> _targetInputForBypass; // todo - bypass is just for outputs, no?
+    private InputSlot<T> _targetInputForBypass;
 }

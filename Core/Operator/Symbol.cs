@@ -90,7 +90,7 @@ namespace T3.Core.Operator
             // input identified by base interface
 
             var fieldInfos = instanceType.GetFields(BindingFlags.Instance | BindingFlags.Public);
-            var inputInfos = fieldInfos.Where(field => field.FieldType.IsAssignableTo(typeof(IInputSlot)));
+            var inputInfos = fieldInfos.Where(field => field.FieldType.IsAssignableTo(typeof(InputSlot)));
             var inputDefs = new List<InputDefinition>();
             foreach (var inputInfo in inputInfos)
             {
@@ -442,7 +442,7 @@ namespace T3.Core.Operator
             }
         }
 
-        private void SortInputSlotsByDefinitionOrder(List<IInputSlot> inputs)
+        private void SortInputSlotsByDefinitionOrder(List<InputSlot> inputs)
         {
             // order the inputs by the given input definitions. original order is coming from code, but input def order is the relevant one
             int numInputs = inputs.Count;
@@ -816,7 +816,7 @@ namespace T3.Core.Operator
         }
         #endregion
 
-        public void InvalidateInputInAllChildInstances(IInputSlot inputSlot)
+        public void InvalidateInputInAllChildInstances(InputSlot inputSlot)
         {
             var childId = inputSlot.Parent.SymbolChildId;
             var inputId = inputSlot.Id;
@@ -837,7 +837,7 @@ namespace T3.Core.Operator
         /// <summary>
         /// Invalidates all instances of a symbol input (e.g. if that input's default was modified)
         /// </summary>
-        public void InvalidateInputDefaultInInstances(IInputSlot inputSlot)
+        public void InvalidateInputDefaultInInstances(InputSlot inputSlot)
         {
             var inputId = inputSlot.Id;
             foreach (var symbolInstance in InstancesOfSymbol)

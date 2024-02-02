@@ -6,11 +6,11 @@ namespace T3.Core.Operator.Slots
 {
     public abstract class InputSlot : SlotBase
     {
-        public readonly Type MappedType;
+        public Type MappedType { get; internal set; }
 
-        public bool TryGetAsMultiInput(out MultiInputSlot multiInput)
+        public bool TryGetAsMultiInput(out MultInputSlot multiInput)
         {
-            multiInput = ThisAsMultiInputSlot;
+            multiInput = ThisAsMultInputSlot;
             return IsMultiInput;
         }
 
@@ -23,16 +23,40 @@ namespace T3.Core.Operator.Slots
             
             if (isMultiInput)
             {
-                ThisAsMultiInputSlot = (MultiInputSlot)this;
+                ThisAsMultInputSlot = (MultInputSlot)this;
             }
         }
 
-        private MultiInputSlot ThisAsMultiInputSlot { get; }
+        private MultInputSlot ThisAsMultInputSlot { get; }
+        public abstract OutputSlot FirstConnection { get; }
+        public abstract SymbolChild.Input Input { get; set; }
+
+        /// <summary>
+        /// used to connect an instance's input slots into its children's input slots
+        /// </summary>
+        public OutputSlot LinkSlot
+        {
+            get
+            {
+                if (_linkSlot != null)
+                    return _linkSlot;
+
+                _linkSlot = CreateLinkSlot();
+                _linkSlot.Id = Id;
+                return _linkSlot;
+            }
+        }
+
+        private OutputSlot? _linkSlot;
+        
+        protected abstract OutputSlot CreateLinkSlot();
+        public abstract void AddConnection(OutputSlot sourceSlot);
+        public abstract void RemoveConnection();
     }
 
     public sealed class InputSlot<T> : InputSlot
     {
-        public T Value { get; private set; }
+        public T Value;
 
         public override int Invalidate()
         {
@@ -59,14 +83,14 @@ namespace T3.Core.Operator.Slots
         {
             var typedInputValue = new InputValue<T>(value);
             UpdateAction = InputUpdate;
-            _keepOriginalUpdateAction = UpdateAction;
+            KeepOriginalUpdateAction = UpdateAction;
             TypedInputValue = typedInputValue;
             Value = typedInputValue.Value;
         }
 
         private SymbolChild.Input _input;
 
-        public SymbolChild.Input Input
+        public override SymbolChild.Input Input
         {
             get => _input;
             set
@@ -80,6 +104,13 @@ namespace T3.Core.Operator.Slots
                     TypedInputValue.AssignClone(TypedDefaultValue);
                 }
             }
+        }
+
+        protected  override OutputSlot CreateLinkSlot()
+        {
+            _linkSlot = new Slot<T>(TypedDefaultValue.Value);
+            _linkSlot.TrySetBypassToInput(this);
+            return _linkSlot;
         }
 
         public T GetValue(EvaluationContext context)
@@ -103,7 +134,7 @@ namespace T3.Core.Operator.Slots
             DirtyFlag.Invalidate();
         }
 
-        public void AddConnection(OutputSlot sourceSlot)
+        public override void AddConnection(OutputSlot sourceSlot)
         {
             // todo - generic version of this function?
             if (sourceSlot is not Slot<T> correctOutputSlot)
@@ -123,7 +154,7 @@ namespace T3.Core.Operator.Slots
             _connectedOutput = correctOutputSlot;
         }
 
-        public void RemoveConnection()
+        public override void RemoveConnection()
         {
             bool hasRemoved = false;
             if (IsConnected)
@@ -164,5 +195,8 @@ namespace T3.Core.Operator.Slots
         public InputValue<T> TypedDefaultValue;
 
         private Slot<T>? _connectedOutput;
+        public override SlotBase FirstConnectedSlot => _connectedOutput!;
+        public override OutputSlot FirstConnection => _connectedOutput!;
+        private Slot<T> _linkSlot;
     }
 }

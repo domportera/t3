@@ -49,15 +49,15 @@ namespace T3.Core.Operator.Slots
         public void RestoreUpdateAction()
         {
             // This will happen when operators are recompiled and output slots are disconnected
-            if (_keepOriginalUpdateAction == null)
+            if (KeepOriginalUpdateAction == null)
             {
                 UpdateAction = null;
                 return;
             }
 
-            UpdateAction = _keepOriginalUpdateAction;
-            _keepOriginalUpdateAction = null;
-            DirtyFlag.Trigger = _keepDirtyFlagTrigger;
+            UpdateAction = KeepOriginalUpdateAction;
+            KeepOriginalUpdateAction = null;
+            DirtyFlag.Trigger = KeepDirtyFlagTrigger;
             DirtyFlag.Invalidate();
         }
 
@@ -68,14 +68,14 @@ namespace T3.Core.Operator.Slots
 
             if (shouldBeDisabled)
             {
-                if (_keepOriginalUpdateAction != null)
+                if (KeepOriginalUpdateAction != null)
                 {
                     Log.Warning("Is already bypassed or disabled");
                     return;
                 }
 
-                _keepOriginalUpdateAction = UpdateAction;
-                _keepDirtyFlagTrigger = DirtyFlag.Trigger;
+                KeepOriginalUpdateAction = UpdateAction;
+                KeepDirtyFlagTrigger = DirtyFlag.Trigger;
                 UpdateAction = EmptyAction;
                 DirtyFlag.Invalidate();
             }
@@ -83,17 +83,15 @@ namespace T3.Core.Operator.Slots
             {
                 RestoreUpdateAction();
             }
-
-            _isDisabled = shouldBeDisabled;
         }
 
         public void OverrideWithAnimationAction(Action<EvaluationContext> newAction)
         {
             // Animation actions are updated regardless if operator was already animated
-            if (_keepOriginalUpdateAction == null)
+            if (KeepOriginalUpdateAction == null)
             {
-                _keepOriginalUpdateAction = UpdateAction;
-                _keepDirtyFlagTrigger = DirtyFlag.Trigger;
+                KeepOriginalUpdateAction = UpdateAction;
+                KeepDirtyFlagTrigger = DirtyFlag.Trigger;
             }
 
             UpdateAction = newAction;
@@ -105,11 +103,25 @@ namespace T3.Core.Operator.Slots
         // ReSharper disable once StaticMemberInGenericType
         protected static readonly Action<EvaluationContext> EmptyAction = _ => { };
 
-        protected Action<EvaluationContext> _keepOriginalUpdateAction;
-        protected DirtyFlagTrigger _keepDirtyFlagTrigger;
+        protected Action<EvaluationContext> KeepOriginalUpdateAction;
+        protected DirtyFlagTrigger KeepDirtyFlagTrigger;
 
-        public bool IsDisabled { get => _isDisabled; set => SetDisabled(value); }
-        protected bool _isDisabled;
+        public bool IsDisabled
+        {
+            get => _isDisabled;
+            set
+            {
+                if (_isDisabled == value)
+                    return;
+                
+                SetDisabled(value);
+                _isDisabled = value;
+            }
+        }
+
+
+        private bool _isDisabled;
+        public abstract SlotBase FirstConnectedSlot { get; }
     }
 
     // Todo: this is an output slot - should be renamed in the future
