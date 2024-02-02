@@ -81,10 +81,11 @@ namespace T3.Core.Operator.Slots
 
         public InputSlot(T value = default!) : base(typeof(T), false)
         {
-            var typedInputValue = new InputValue<T>(value);
             UpdateAction = InputUpdate;
             KeepOriginalUpdateAction = UpdateAction;
+            var typedInputValue = new InputValue<T>(value);
             TypedInputValue = typedInputValue;
+            TypedDefaultValue = new InputValue<T>(value);
             Value = typedInputValue.Value;
         }
 

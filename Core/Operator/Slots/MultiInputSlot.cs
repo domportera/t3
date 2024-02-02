@@ -28,11 +28,17 @@ namespace T3.Core.Operator.Slots
 
         public override void AddConnection(OutputSlot sourceSlot, int index)
         {
-            var sourceSlotTyped = (Slot<T>)sourceSlot;
-            if (index < _inputConnectionsTyped.Count)
-                _inputConnectionsTyped.Insert(index, sourceSlotTyped);
-            else
-                _inputConnectionsTyped.Add(sourceSlotTyped);
+            if (sourceSlot is Slot<T> sourceSlotTyped)
+            {
+                if (index < _inputConnectionsTyped.Count)
+                    _inputConnectionsTyped.Insert(index, sourceSlotTyped);
+                else
+                    _inputConnectionsTyped.Add(sourceSlotTyped);
+            }
+            else if (sourceSlot is MultiOutputSlot<T> multiOutputSlot)
+            {
+                throw new Exception("Plugging a MultiOutputSlot into a MultiInputSlot is not supported");
+            }
         }
 
         public override void RemoveConnection()

@@ -43,7 +43,22 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
     }
     
     public InputSlot ConnectedSlot => _connectedInput;
-    public InputSlot LinkSlot { get; set; }
+
+    public InputSlot LinkSlot
+    {
+        get
+        {
+            if (_linkSlot != null)
+                return _linkSlot;
+
+            _linkSlot = GetLinkSlot();
+            return _linkSlot;
+        }
+    }
+
+    protected abstract InputSlot GetLinkSlot();
+
+    private InputSlot _linkSlot;
     private InputSlot _connectedInput;
     public override SlotBase FirstConnectedSlot => _connectedInput;
     private bool _isConnected;
@@ -78,6 +93,11 @@ public class MultiOutputSlot<T> : MultiOutputSlot
     private void ByPassUpdate(EvaluationContext context)
     {
         _targetInputForBypass.GetValues(ref _values, context);
+    }
+
+    protected override InputSlot GetLinkSlot()
+    {
+        return _targetInputForBypass;
     }
 }
 
@@ -114,4 +134,10 @@ public class Slot<T>(T defaultValue = default) : OutputSlot(typeof(T))
     }
 
     private InputSlot<T> _targetInputForBypass;
+    protected override InputSlot GetLinkSlot()
+    {
+        var input = new InputSlot<T>();
+        input.AddConnection(this);
+        return input;
+    }
 }
