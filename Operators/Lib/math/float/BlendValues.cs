@@ -21,7 +21,7 @@ namespace lib.math.@float
         {
             Result.Value = 0;
 
-            var collectedTypedInputs = Values.GetCollectedTypedInputs();
+            var collectedTypedInputs = Values.InputConnectionsTyped;
             var count = collectedTypedInputs.Count;
             if (count == 0)
                 return;

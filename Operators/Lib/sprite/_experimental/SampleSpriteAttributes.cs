@@ -18,9 +18,9 @@ namespace lib.sprite._experimental
             OutBuffer.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => Center;
-        IInputSlot ITransformable.RotationInput => TextureRotate;
-        IInputSlot ITransformable.ScaleInput => TextureScale;
+        InputSlot ITransformable.TranslationInput => Center;
+        InputSlot ITransformable.RotationInput => TextureRotate;
+        InputSlot ITransformable.ScaleInput => TextureScale;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "df943375-bba4-4f90-a3e2-5226aaf4069d")]

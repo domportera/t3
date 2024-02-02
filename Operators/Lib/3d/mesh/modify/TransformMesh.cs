@@ -17,9 +17,9 @@ namespace lib._3d.mesh.modify
             Result.TransformableOp = this;
         }        
         
-        IInputSlot ITransformable.TranslationInput => Translation;
-        IInputSlot ITransformable.RotationInput => Rotation;
-        IInputSlot ITransformable.ScaleInput => Scale;
+        InputSlot ITransformable.TranslationInput => Translation;
+        InputSlot ITransformable.RotationInput => Rotation;
+        InputSlot ITransformable.ScaleInput => Scale;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "c2c9afc7-3474-40c3-be82-b9f48c92a2c5")]

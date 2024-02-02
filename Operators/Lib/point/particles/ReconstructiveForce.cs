@@ -22,9 +22,9 @@ namespace lib.point.particles
             ParticleSystem.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => VolumeCenter;
-        IInputSlot ITransformable.RotationInput => VolumeRotate;
-        IInputSlot ITransformable.ScaleInput => VolumeScale;
+        InputSlot ITransformable.TranslationInput => VolumeCenter;
+        InputSlot ITransformable.RotationInput => VolumeRotate;
+        InputSlot ITransformable.ScaleInput => VolumeScale;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "6be3ff09-439f-4506-86d9-27e70422bb41")]

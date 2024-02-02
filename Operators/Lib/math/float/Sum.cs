@@ -19,7 +19,7 @@ namespace lib.math.@float
         private void Update(EvaluationContext context)
         {
             Result.Value = 0;
-            foreach (var input in Input.GetCollectedTypedInputs())
+            foreach (var input in Input.InputConnectionsTyped)
             {
                 Result.Value += input.GetValue(context);
             }

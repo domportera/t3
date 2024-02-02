@@ -28,8 +28,8 @@ namespace lib.img.fx.@_
         
         private void Update(EvaluationContext context)
         {
-            var updateLive = UpdateLive.GetValue(context);
-            if (_updatedOnce && !updateLive)
+            var updateLive = UpdateLive.GetValues(context);
+            if (_updatedOnce && updateLive.Count == 0)
             {
                 FilteredCubeMap.Value = _prefilteredCubeMap;
                 return;

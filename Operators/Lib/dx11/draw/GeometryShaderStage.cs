@@ -30,7 +30,7 @@ namespace lib.dx11.draw
 
             ConstantBuffers.GetValues(ref _constantBuffers, context);
             ShaderResources.GetValues(ref _shaderResourceViews, context);
-            SamplerStates.GetValue(context);
+            SamplerStates.GetValues(context);
 
             _prevConstantBuffers = gsStage.GetConstantBuffers(0, _constantBuffers.Length);
             _prevShaderResourceViews = gsStage.GetShaderResources(0, _shaderResourceViews.Length);

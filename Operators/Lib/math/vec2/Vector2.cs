@@ -27,7 +27,7 @@ namespace lib.math.vec2
         [Input(Guid = "2d9c040d-5244-40ac-8090-d8d57323487b")]
         public readonly InputSlot<float> Y = new();
 
-        public bool TryExtractInputsFor(IInputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
+        public bool TryExtractInputsFor(InputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
         {
             if (inputSlot is not InputSlot<System.Numerics.Vector2> vecSlot)
             {

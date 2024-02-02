@@ -36,7 +36,7 @@ namespace lib.exec
 
             _callsSinceLastRefresh = 0;
             
-            var commands = Command.CollectedInputs;
+            var commands = Command.InputConnectionsTyped;
 
             // do preparation if needed
             for (int i = 0; i < commands.Count; i++)

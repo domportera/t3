@@ -34,9 +34,9 @@ namespace examples
             Sphere,
         }
 
-        public IInputSlot TranslationInput => Translation;
-        public IInputSlot RotationInput { get; }
-        public IInputSlot ScaleInput { get; }
+        public InputSlot TranslationInput => Translation;
+        public InputSlot RotationInput { get; }
+        public InputSlot ScaleInput { get; }
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
     }
 }

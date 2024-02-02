@@ -28,7 +28,7 @@ namespace lib.dx11.draw
             var deviceContext = device.ImmediateContext;
             var rasterizer = deviceContext.Rasterizer;
 
-            ScissorRectangles.GetValue(context);
+            ScissorRectangles.GetValues(context);
             _prevViewports = rasterizer.GetViewports<RawViewportF>();
             
             Viewports.GetValues(ref _viewports, context);

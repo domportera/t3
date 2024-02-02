@@ -34,7 +34,7 @@ namespace lib.point._cpu
 
         private void Update(EvaluationContext context)
         {
-            var connectedLists = Lists2.CollectedInputs.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
+            var connectedLists = Lists2.InputConnectionsTyped.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
             Lists2.DirtyFlag.Clear();
             
             if (connectedLists.Count != 1)

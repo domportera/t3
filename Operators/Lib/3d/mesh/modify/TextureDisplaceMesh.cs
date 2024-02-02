@@ -20,9 +20,9 @@ namespace lib._3d.mesh.modify
             DisplacedMesh.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => Center;
-        IInputSlot ITransformable.RotationInput => TextureRotate;
-        IInputSlot ITransformable.ScaleInput => Stretch;
+        InputSlot ITransformable.TranslationInput => Center;
+        InputSlot ITransformable.RotationInput => TextureRotate;
+        InputSlot ITransformable.ScaleInput => Stretch;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "c4363e87-16fc-499b-8dcd-51dde1f079f6")]

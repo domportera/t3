@@ -19,7 +19,7 @@ namespace lib.@string
 
         private void Update(EvaluationContext context)
         {
-            var connections = Input.GetCollectedTypedInputs();
+            var connections = Input.InputConnectionsTyped;
             Input.DirtyFlag.Clear();
             if (connections == null || connections.Count == 0)
                 return;

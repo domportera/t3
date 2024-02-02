@@ -31,7 +31,7 @@ namespace lib.dx11.draw
 
             if (RenderTargets.DirtyFlag.IsDirty)
             {
-                _connectedDescriptions = RenderTargets.GetCollectedTypedInputs();
+                _connectedDescriptions = RenderTargets.InputConnectionsTyped;
                 RenderTargets.DirtyFlag.Clear();
             }
 
@@ -50,7 +50,7 @@ namespace lib.dx11.draw
             } 
         }
 
-        private List<Slot<RenderTargetBlendDescription>> _connectedDescriptions;
+        private IReadOnlyList<Slot<RenderTargetBlendDescription>> _connectedDescriptions;
 
         [Input(Guid = "63D0E4E8-FA00-4059-A11B-6A31E66757DC")]
         public readonly MultiInputSlot<RenderTargetBlendDescription> RenderTargets = new();

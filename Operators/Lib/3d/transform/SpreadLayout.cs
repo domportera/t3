@@ -19,9 +19,9 @@ namespace lib._3d.transform
         [Output(Guid = "60c25429-be91-4552-b1fe-b08479793abe")]
         public readonly Slot<Command> Output = new();
         
-        IInputSlot ITransformable.TranslationInput => Translation;
-        IInputSlot ITransformable.RotationInput => Rotation;
-        IInputSlot ITransformable.ScaleInput => Scale;
+        InputSlot ITransformable.TranslationInput => Translation;
+        InputSlot ITransformable.RotationInput => Rotation;
+        InputSlot ITransformable.ScaleInput => Scale;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         public SpreadLayout()
@@ -35,7 +35,7 @@ namespace lib._3d.transform
 
             var spread = Spread.GetValue(context);
             
-            var commands = Commands.CollectedInputs;
+            var commands = Commands.InputConnectionsTyped;
             var isEnabled = IsEnabled.GetValue(context);
             
             var s = Scale.GetValue(context) * UniformScale.GetValue(context);

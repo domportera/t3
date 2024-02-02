@@ -21,7 +21,7 @@ namespace lib.dx11.draw
         private BlendState[] _blendStates = new BlendState[0];
         private void Update(EvaluationContext context)
         {
-            // var blendStates = BlendStates.GetCollectedTypedInputs();
+            // var blendStates = BlendStates.InputConnectionsTyped;
             BlendStates.GetValues(ref _blendStates, context);
             var index = Index.GetValue(context);
 

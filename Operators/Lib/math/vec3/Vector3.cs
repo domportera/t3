@@ -30,7 +30,7 @@ namespace lib.math.vec3
         [Input(Guid = "627F766E-056C-413E-8530-838D673BD031")]
         public readonly InputSlot<float> Z = new();
 
-        public bool TryExtractInputsFor(IInputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
+        public bool TryExtractInputsFor(InputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
         {
             if (inputSlot is not InputSlot<System.Numerics.Vector3> vecSlot)
             {

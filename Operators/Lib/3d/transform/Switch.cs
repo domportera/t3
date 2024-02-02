@@ -23,7 +23,7 @@ namespace lib._3d.transform
 
         private void UpdateCount(EvaluationContext context)
         {
-            var commands = Commands.GetCollectedTypedInputs();
+            var commands = Commands.InputConnectionsTyped;
             if (commands == null)
             {
                 Count.Value = 0;
@@ -35,7 +35,7 @@ namespace lib._3d.transform
 
         private void Update(EvaluationContext context)
         {
-            var commands = Commands.GetCollectedTypedInputs();
+            var commands = Commands.InputConnectionsTyped;
             var index = Index.GetValue(context);
 
             if (commands.Count == 0 || index == -1)

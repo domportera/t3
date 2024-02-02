@@ -20,7 +20,7 @@ namespace lib.dx11.@_
 
         private void Update(EvaluationContext context)
         {
-            var connections = Input.GetCollectedTypedInputs();
+            var connections = Input.InputConnectionsTyped;
             if (connections == null || connections.Count == 0)
                 return;
 

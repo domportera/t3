@@ -45,9 +45,9 @@ namespace lib.anim
             
             
 
-            var opIndex = OpIndex.GetValue(context).Clamp(0, AnimatedOp.CollectedInputs.Count);
+            var opIndex = OpIndex.GetValue(context).Clamp(0, AnimatedOp.InputConnections.Count);
             _wrapIndex = WrapIndex.GetValue(context);
-            var slot = AnimatedOp.CollectedInputs[opIndex];
+            var slot = AnimatedOp.InputConnections[opIndex];
             var requestCurveIndex = (int)CurveIndex.GetValue(context);
             if (TryFindCurveWithIndex(slot, requestCurveIndex, needsUpdate, out var curve))
             {
@@ -101,7 +101,7 @@ namespace lib.anim
             }
         }
 
-        private bool TryFindCurveWithIndex(Slot<float> slot, int requestCurveIndex, bool forceUpdate, out Curve curve)
+        private bool TryFindCurveWithIndex(SlotBase slot, int requestCurveIndex, bool forceUpdate, out Curve curve)
         {
             curve = null;
             var curveIndex = 0;

@@ -128,7 +128,7 @@ namespace lib._3d.transform
             CameraPosition = eye;
             CameraTarget = eye + adjustedViewDirection;
             
-            float ComputeAngle(Slot<Vector2> angleAndWobbleInput, int seedIndex)
+            float ComputeAngle(InputSlot<Vector2> angleAndWobbleInput, int seedIndex)
             {
                 var angleAndWobble = angleAndWobbleInput.GetValue(context);
                 var wobble=  Math.Abs(angleAndWobble.Y) < 0.001f 

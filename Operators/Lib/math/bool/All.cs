@@ -21,7 +21,7 @@ namespace lib.math.@bool
             var result = true;
             var anyConnected = false;
             
-            foreach (var input in Input.GetCollectedTypedInputs())
+            foreach (var input in Input.InputConnectionsTyped)
             {
                 anyConnected = true;
                 result &= input.GetValue(context);

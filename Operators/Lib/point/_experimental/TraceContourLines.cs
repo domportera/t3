@@ -18,9 +18,9 @@ namespace lib.point._experimental
             OutBuffer.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => Center;
-        IInputSlot ITransformable.RotationInput => TextureRotate;
-        IInputSlot ITransformable.ScaleInput => TextureStretch;
+        InputSlot ITransformable.TranslationInput => Center;
+        InputSlot ITransformable.RotationInput => TextureRotate;
+        InputSlot ITransformable.ScaleInput => TextureStretch;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "4ed5dad4-e9f6-49a2-8aa6-6062b4202012")]

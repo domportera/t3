@@ -14,9 +14,9 @@ namespace lib.point.modify
             Output.TransformableOp = this;
         }
         
-        public IInputSlot TranslationInput => Center;
-        public IInputSlot RotationInput => null;
-        public IInputSlot ScaleInput => null;
+        public InputSlot TranslationInput => Center;
+        public InputSlot RotationInput => null;
+        public InputSlot ScaleInput => null;
         
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }        
         

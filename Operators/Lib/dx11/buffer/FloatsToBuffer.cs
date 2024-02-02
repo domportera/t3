@@ -27,8 +27,8 @@ namespace lib.dx11.buffer
         {
             try
             {
-                var matrixParams = Vec4Params.GetCollectedTypedInputs();
-                var floatParams = Params.GetCollectedTypedInputs();
+                var matrixParams = Vec4Params.InputConnectionsTyped;
+                var floatParams = Params.InputConnectionsTyped;
 
                 var floatParamCount = floatParams.Count;
                 var vec4ArrayLength = matrixParams.Count;

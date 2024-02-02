@@ -17,9 +17,9 @@ namespace lib.point.modify
             OutBuffer.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => Center;
-        IInputSlot ITransformable.RotationInput => TextureRotate;
-        IInputSlot ITransformable.ScaleInput => Stretch;
+        InputSlot ITransformable.TranslationInput => Center;
+        InputSlot ITransformable.RotationInput => TextureRotate;
+        InputSlot ITransformable.ScaleInput => Stretch;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "d42b8adc-f1d6-4f32-94a3-24802630d763")]

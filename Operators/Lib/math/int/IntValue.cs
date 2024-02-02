@@ -24,7 +24,7 @@ namespace lib.math.@int
         [Input(Guid = "4515C98E-05BC-4186-8773-4D2B31A8C323")]
         public readonly InputSlot<int> Int = new();
 
-        public bool TryExtractInputsFor(IInputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
+        public bool TryExtractInputsFor(InputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
         {
             if (inputSlot is not InputSlot<int> intSlot)
             {

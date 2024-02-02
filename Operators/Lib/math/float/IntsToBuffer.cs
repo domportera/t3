@@ -24,7 +24,7 @@ namespace lib.math.@float
 
         private void Update(EvaluationContext context)
         {
-            var intParams = Params.GetCollectedTypedInputs();
+            var intParams = Params.InputConnectionsTyped;
             var intParamCount = intParams.Count;
 
             var arraySize = (intParamCount / 4 + (intParamCount % 4 == 0 ? 0 : 1)) * 4; // always 16byte slices for alignment

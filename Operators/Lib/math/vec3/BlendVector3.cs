@@ -21,7 +21,7 @@ namespace lib.math.vec3
         {
             Result.Value = System.Numerics.Vector3.Zero;
 
-            var collectedTypedInputs = Vectors.GetCollectedTypedInputs();
+            var collectedTypedInputs = Vectors.InputConnectionsTyped;
             var count = collectedTypedInputs.Count;
             if (count == 0)
                 return;

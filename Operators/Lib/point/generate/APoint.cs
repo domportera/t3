@@ -36,9 +36,9 @@ namespace lib.point.generate
             _pointListWithSeparator.TypedElements[1] = Point.Separator();
         }
         
-        IInputSlot ITransformable.TranslationInput => Position;
-        IInputSlot ITransformable.RotationInput => null;
-        IInputSlot ITransformable.ScaleInput => null;
+        InputSlot ITransformable.TranslationInput => Position;
+        InputSlot ITransformable.RotationInput => null;
+        InputSlot ITransformable.ScaleInput => null;
 
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 

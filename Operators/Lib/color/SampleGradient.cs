@@ -45,7 +45,7 @@ namespace lib.color
         [Input(Guid = "76CF4A72-2D25-48CB-A1EC-08D0DDABB053", MappedType = typeof(Gradient.Interpolations))]
         public readonly InputSlot<int> Interpolation = new();
 
-        public bool TryExtractInputsFor(IInputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
+        public bool TryExtractInputsFor(InputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
         {
             if(inputSlot is not InputSlot<Gradient> gradientSlot)
             {

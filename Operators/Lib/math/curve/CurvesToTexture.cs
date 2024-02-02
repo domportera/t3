@@ -24,39 +24,18 @@ namespace lib.math.curve
             CurveTexture.UpdateAction = Update;
         }
 
-        private readonly List<Curve> _curves = new(4);
-
         private void Update(EvaluationContext context)
         {
-            _curves.Clear();
-
             var useGrayScale = ExportGrayScale.GetValue(context);
             var useHorizontal = Direction.GetValue(context) == 0;
             var sampleCount = SampleSize.GetValue(context).Clamp(1, 16384);
 
-            if (Curves.IsConnected)
-            {
-                foreach (var curveInput in Curves.CollectedInputs)
-                {
-                    var curve = curveInput.GetValue(context);
-                    if (curve == null)
-                        continue;
+            var curves = Curves.GetValues(context);
 
-                    _curves.Add(curve);
-                }
-                Curves.DirtyFlag.Clear();
-            }
-            else
-            {
-                var c = Curves.GetValue(context);
-                if (c != null)
-                    _curves.Add(c);
-            }
-
-            var curveCount = _curves.Count;
+            var curveCount = curves.Count;
             if (curveCount == 0)
                 return;
-
+            
             //const int sampleCount = 256;
             var grayScaleSizeFactor = useGrayScale ? 4 : 1;
             var entrySizeInBytes = sizeof(float) * grayScaleSizeFactor;
@@ -84,7 +63,7 @@ namespace lib.math.curve
 
                 if (useHorizontal)
                 {
-                    foreach (var curve in _curves)
+                    foreach (var curve in curves)
                     {
                         for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++)
                         {
@@ -107,7 +86,7 @@ namespace lib.math.curve
                 {
                     for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++)
                     {
-                        foreach (var curve in _curves)
+                        foreach (var curve in curves)
                         {
                             if (useGrayScale)
                             {

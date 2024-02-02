@@ -24,7 +24,7 @@ namespace lib.@string
         [Input(Guid = "ceeae47b-d792-471d-a825-49e22749b7b9")]
         public readonly InputSlot<string> InputString = new();
 
-        public bool TryExtractInputsFor(IInputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
+        public bool TryExtractInputsFor(InputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters)
         {
             if (inputSlot is not InputSlot<string> stringSlot)
             {

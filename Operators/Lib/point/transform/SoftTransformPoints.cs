@@ -18,9 +18,9 @@ namespace lib.point.transform
             Output.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => VolumeCenter;
-        IInputSlot ITransformable.RotationInput => Rotate;
-        IInputSlot ITransformable.ScaleInput => Scale;
+        InputSlot ITransformable.TranslationInput => VolumeCenter;
+        InputSlot ITransformable.RotationInput => Rotate;
+        InputSlot ITransformable.ScaleInput => Scale;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "5fac3f09-d6dd-4cba-8575-983353e60af4")]

@@ -19,7 +19,7 @@ namespace lib.math.@float
 
         private void Update(EvaluationContext context)
         {
-            var connections = FloatValues.GetCollectedTypedInputs();
+            var connections = FloatValues.InputConnectionsTyped;
             FloatValues.DirtyFlag.Clear();
             
             if (connections == null || connections.Count == 0)
