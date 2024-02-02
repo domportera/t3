@@ -500,7 +500,7 @@ namespace T3.Editor.Gui.Windows
         private static readonly List<Window> _parameterWindowInstances = new();
         private ChangeSymbolChildNameCommand _symbolChildNameCommand;
         private static ChangeInputValueCommand _inputValueCommandInFlight;
-        private static IInputSlot _inputSlotForActiveCommand;
+        private static InputSlot _inputSlotForActiveCommand;
         private static int _instanceCounter;
         private static readonly Regex _itemRegex = new(@"\[([A-Za-z\d_]+)\]", RegexOptions.Compiled);
     }

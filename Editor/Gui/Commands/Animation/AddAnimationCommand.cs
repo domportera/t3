@@ -9,7 +9,7 @@ namespace T3.Editor.Gui.Commands.Animation
         public string Name { get; set; }
         public bool IsUndoable => true;
         
-        public AddAnimationCommand(Animator animator, IInputSlot inputSlot)
+        public AddAnimationCommand(Animator animator, InputSlot inputSlot)
         {
             _animator = animator;
             _inputSlot = inputSlot;
@@ -33,7 +33,7 @@ namespace T3.Editor.Gui.Commands.Animation
         }
 
         private readonly Animator _animator;
-        private readonly IInputSlot _inputSlot;
+        private readonly InputSlot _inputSlot;
         private bool _wasDefault;
         private Curve[] _keepCurves;
     }

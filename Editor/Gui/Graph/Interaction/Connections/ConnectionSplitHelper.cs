@@ -52,7 +52,7 @@ namespace T3.Editor.Gui.Graph.Interaction.Connections
                 {
                     var connection = _bestMatchYetForCurrentFrame.Connection;
 
-                    ISlot outputSlot = null;
+                    OutputSlot outputSlot = null;
                     SymbolChild.Output output = null;
                     Symbol.OutputDefinition outputDefinition = null;
 

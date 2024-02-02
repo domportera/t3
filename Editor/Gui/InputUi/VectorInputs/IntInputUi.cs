@@ -55,7 +55,7 @@ namespace T3.Editor.Gui.InputUi.VectorInputs
             return SingleValueEdit.Draw(ref value, -Vector2.UnitX, Min, Max, Clamp, Scale);
         }
 
-        public override void ApplyValueToAnimation(IInputSlot inputSlot, InputValue inputValue, Animator animator, double time)
+        public override void ApplyValueToAnimation(InputSlot inputSlot, InputValue inputValue, Animator animator, double time)
         {
             if (inputValue is not InputValue<int> typedInputValue)
                 return;

@@ -27,7 +27,7 @@ namespace T3.Editor.Gui.OutputUi
             _gridInstance = gridPlaneGizmoSymbol.CreateInstance(Guid.NewGuid(), null);
         }
 
-        protected override void Recompute(ISlot slot, EvaluationContext context)
+        protected override void Recompute(OutputSlot slot, EvaluationContext context)
         {
             var originalCamMatrix = context.WorldToCamera;
             var originalViewMatrix = context.CameraToClipSpace;
@@ -90,7 +90,7 @@ namespace T3.Editor.Gui.OutputUi
                        };
         }
 
-        protected override void DrawTypedValue(ISlot slot)
+        protected override void DrawTypedValue(OutputSlot slot)
         {
             if (slot is Slot<Command> typedSlot)
             {

@@ -17,7 +17,7 @@ namespace T3.Editor.Gui.OutputUi
             // TODO: check if curve should be cloned too
         }
 
-        protected override void DrawTypedValue(ISlot slot)
+        protected override void DrawTypedValue(OutputSlot slot)
         {
             if (slot is Slot<T> typedSlot)
             {
@@ -37,7 +37,7 @@ namespace T3.Editor.Gui.OutputUi
             }
         }
 
-        private ISlot _lastSlot;
+        private OutputSlot _lastSlot;
 
         private readonly VectorCurvePlotCanvas<T> _curve2 = new(resolution: 500);
     }

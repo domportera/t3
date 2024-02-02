@@ -239,23 +239,24 @@ namespace T3.Editor.Gui.Graph
             }
         }
 
-        private static void RecursivelyCollectExportData(ISlot slot, ExportInfo exportInfo)
+        private static void RecursivelyCollectExportData(SlotBase slot, ExportInfo exportInfo)
         {
-            if (slot is IInputSlot)
+            if (slot is InputSlot inputSlot)
             {
                 if (slot.IsConnected)
                 {
-                    RecursivelyCollectExportData(slot.FirstConnection, exportInfo);
+                    RecursivelyCollectExportData(inputSlot.FirstConnection, exportInfo);
                 }
 
-                CheckInputForResourcePath(slot, exportInfo);
+                CheckInputForResourcePath(inputSlot, exportInfo);
                 return;
             }
 
+            var outputSlot = (OutputSlot)slot;
             if (slot.IsConnected)
             {
                 // slot is an output of an composition op
-                RecursivelyCollectExportData(slot.FirstConnection, exportInfo);
+                RecursivelyCollectExportData(outputSlot.ConnectedSlot, exportInfo);
                 exportInfo.TryAddInstance(slot.Parent);
                 return;
             }
@@ -274,7 +275,7 @@ namespace T3.Editor.Gui.Graph
 
                 if (input.TryGetAsMultiInput(out var multiInput))
                 {
-                    foreach (var entry in multiInput.GetCollectedInputs())
+                    foreach (var entry in multiInput.InputConnections)
                     {
                         RecursivelyCollectExportData(entry, exportInfo);
                     }
@@ -305,7 +306,7 @@ namespace T3.Editor.Gui.Graph
             return soundtrack.FilePath;
         }
 
-        private static void CheckInputForResourcePath(ISlot inputSlot, ExportInfo exportInfo)
+        private static void CheckInputForResourcePath(InputSlot inputSlot, ExportInfo exportInfo)
         {
             var parent = inputSlot.Parent;
             var inputUi = SymbolUiRegistry.Entries[parent.Symbol.Id].InputUis[inputSlot.Id];

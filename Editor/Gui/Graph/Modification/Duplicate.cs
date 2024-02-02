@@ -189,7 +189,7 @@ internal static class Duplicate
                 return node;
 
             var idValue = nameSyntax.Identifier.ValueText;
-            if (!(idValue == "InputSlot" || idValue == "MultiInputSlot" || idValue == "Slot" || idValue == "TimeClipSlot" ||
+            if (!(idValue == "InputSlot" || idValue == "MultInputSlot" || idValue == "Slot" || idValue == "TimeClipSlot" ||
                   idValue == "TransformCallbackSlot"))
                 return node; // no input / multi-input / slot / timeClip-slot (output)
 

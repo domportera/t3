@@ -27,7 +27,7 @@ namespace T3.Editor.Gui.InputUi.VectorInputs
             return inputEditState;
         }
         
-        public override void ApplyValueToAnimation(IInputSlot inputSlot, InputValue inputValue, Animator animator, double time)
+        public override void ApplyValueToAnimation(InputSlot inputSlot, InputValue inputValue, Animator animator, double time)
         {
             if (inputValue is not InputValue<Vector3> typedInputValue)
                 return;

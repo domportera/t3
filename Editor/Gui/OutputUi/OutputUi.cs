@@ -18,7 +18,7 @@ namespace T3.Editor.Gui.OutputUi
         public bool IsSelected => NodeSelection.IsNodeSelected(this);
         public abstract IOutputUi Clone();
 
-        public void DrawValue(ISlot slot, EvaluationContext context, bool recompute)
+        public void DrawValue(OutputSlot slot, EvaluationContext context, bool recompute)
         {
             var drawList = ImGui.GetWindowDrawList();
             drawList.ChannelsSplit(2);
@@ -38,15 +38,15 @@ namespace T3.Editor.Gui.OutputUi
             TransformGizmoHandling.RestoreDrawList();
         }
 
-        protected virtual void Recompute(ISlot slot, EvaluationContext context)
+        protected virtual void Recompute(OutputSlot slot, EvaluationContext context)
         {
             StartInvalidation(slot);
             slot.Update(context);
         }
 
-        protected abstract void DrawTypedValue(ISlot slot);
+        protected abstract void DrawTypedValue(OutputSlot slot);
 
-        public void StartInvalidation(ISlot slot)
+        public void StartInvalidation(OutputSlot slot)
         {
             DirtyFlag.InvalidationRefFrame++;
             slot.Invalidate();

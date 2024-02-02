@@ -854,7 +854,7 @@ namespace T3.Editor.Gui.Graph
                 return childUi.Size;
             }
 
-            var additionalMultiInputSlots = 0;
+            var additionalMultInputSlots = 0;
             foreach (var input in visibleInputUis)
             {
                 if (!input.InputDefinition.IsMultiInput)
@@ -862,11 +862,11 @@ namespace T3.Editor.Gui.Graph
 
                 //TODO: this should be refactored, because it's very slow and is later repeated
                 var connectedLines = global::T3.Editor.Gui.Graph.Graph.Connections.GetLinesToNodeInputSlot(childUi, input.Id);
-                additionalMultiInputSlots += connectedLines.Count;
+                additionalMultInputSlots += connectedLines.Count;
             }
 
             return new Vector2(SymbolChildUi.DefaultOpSize.X,
-                               23 + (visibleInputUis.Count + additionalMultiInputSlots) * 13);
+                               23 + (visibleInputUis.Count + additionalMultInputSlots) * 13);
         }
 
         private static void DrawOutput(SymbolChildUi childUi, Symbol.OutputDefinition outputDef, ImRect usableArea, Color colorForType, bool hovered)
@@ -1231,7 +1231,7 @@ namespace T3.Editor.Gui.Graph
                        };
         }
         
-        private static string GetValueString(IInputSlot outputSlot)
+        private static string GetValueString(InputSlot outputSlot)
         {
             
             return outputSlot switch
@@ -1247,7 +1247,7 @@ namespace T3.Editor.Gui.Graph
                        };
         }
 
-        private static string GetValueString(ISlot outputSlot)
+        private static string GetValueString(OutputSlot outputSlot)
         {
             return outputSlot switch
                        {

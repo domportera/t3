@@ -77,7 +77,7 @@ namespace T3.Editor.Gui.InputUi.VectorInputs
         }
 
 
-        public abstract override void ApplyValueToAnimation(IInputSlot inputSlot, InputValue inputValue, Animator animator, double time);
+        public abstract override void ApplyValueToAnimation(InputSlot inputSlot, InputValue inputValue, Animator animator, double time);
         
         public override void DrawSettings()
         {

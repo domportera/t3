@@ -90,7 +90,7 @@ namespace T3.Editor.UiModel
                 // Set disabled status on all outputs of each instance
                 foreach (var instance in matchingChildInstances)
                 {
-                    List<ISlot> outputs = instance.Outputs;
+                    List<OutputSlot> outputs = instance.Outputs;
 
                     foreach (var t in outputs)
                     {

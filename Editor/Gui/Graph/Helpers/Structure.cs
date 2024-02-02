@@ -187,9 +187,10 @@ internal static class Structure
 
     /// <summary>
     /// Scan all slots required for updating a Slot.
-    /// This can be used for invalidation and cycle checking. 
+    /// This can be used for invalidation and cycle checking.
+    /// Todo: split this into InputSlot and OutputSlot-specific methods 
     /// </summary>
-    public static void CollectSlotDependencies(ISlot slot, HashSet<ISlot> all)
+    public static void CollectSlotDependencies(SlotBase slot, HashSet<SlotBase> all)
     {
         if (slot == null)
         {
@@ -202,16 +203,16 @@ internal static class Structure
 
         all.Add(slot);
 
-        if (slot is IInputSlot)
+        if (slot is InputSlot inputSlot)
         {
             if (!slot.IsConnected)
                 return;
 
-            CollectSlotDependencies(slot.FirstConnection, all);
+            CollectSlotDependencies(inputSlot.FirstConnection, all);
         }
-        else if (slot.IsConnected)
+        else if (slot is OutputSlot outputSlot && slot.IsConnected)
         {
-            CollectSlotDependencies(slot.FirstConnection, all);
+            CollectSlotDependencies(outputSlot.ConnectedSlot, all);
         }
         else
         {
@@ -222,7 +223,7 @@ internal static class Structure
                 {
                     if (input.TryGetAsMultiInput(out var multiInput))
                     {
-                        foreach (var entry in multiInput.GetCollectedInputs())
+                        foreach (var entry in multiInput.InputConnections)
                         {
                             CollectSlotDependencies(entry, all);
                         }
