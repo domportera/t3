@@ -412,7 +412,7 @@ namespace T3.Editor.Gui.Windows.TimeLine
         public struct AnimationParameter
         {
             public IEnumerable<Curve> Curves;
-            public IInputSlot Input;
+            public InputSlot Input;
             public Instance Instance;
             public SymbolChildUi ChildUi;
         }

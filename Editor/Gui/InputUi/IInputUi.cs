@@ -41,10 +41,10 @@ namespace T3.Editor.Gui.InputUi
 
         string Description { get; set; }
         
-        void ApplyValueToAnimation(IInputSlot inputSlot, InputValue inputValue, Animator animator, double time);
+        void ApplyValueToAnimation(InputSlot inputSlot, InputValue inputValue, Animator animator, double time);
         
-        InputEditStateFlags DrawParameterEdit(IInputSlot input, SymbolUi compositionUi, SymbolChildUi symbolChildUi, bool hideNonEssentials, bool skipIfDefault);
-        string GetSlotValue(IInputSlot inputSlot);
+        InputEditStateFlags DrawParameterEdit(InputSlot input, SymbolUi compositionUi, SymbolChildUi symbolChildUi, bool hideNonEssentials, bool skipIfDefault);
+        string GetSlotValue(InputSlot inputSlot);
         void DrawSettings();
         void DrawDescriptionEdit();
 

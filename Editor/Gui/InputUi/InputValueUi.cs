@@ -69,7 +69,7 @@ namespace T3.Editor.Gui.InputUi
 
         public abstract IInputUi Clone();
 
-        public virtual void ApplyValueToAnimation(IInputSlot inputSlot, InputValue inputValue, Animator animator, double time)
+        public virtual void ApplyValueToAnimation(InputSlot inputSlot, InputValue inputValue, Animator animator, double time)
         {
             Log.Warning(IsAnimatable
                             ? "Input type has no implementation to insert values into animation curves"
@@ -94,7 +94,7 @@ namespace T3.Editor.Gui.InputUi
             return InputEditStateFlags.Nothing;
         }
 
-        public virtual string GetSlotValue(IInputSlot inputSlot)
+        public virtual string GetSlotValue(InputSlot inputSlot)
         {
             if (inputSlot is InputSlot<T> typedInputSlot)
             {
@@ -116,7 +116,7 @@ namespace T3.Editor.Gui.InputUi
                                                                Icon.KeyframeToggleOnBoth,
                                                            };
 
-        public InputEditStateFlags DrawParameterEdit(IInputSlot inputSlot, SymbolUi compositionUi, SymbolChildUi symbolChildUi, bool hideNonEssentials,
+        public InputEditStateFlags DrawParameterEdit(InputSlot inputSlot, SymbolUi compositionUi, SymbolChildUi symbolChildUi, bool hideNonEssentials,
                                                      bool skipIfDefault)
         {
             var editState = InputEditStateFlags.Nothing;
@@ -178,8 +178,8 @@ namespace T3.Editor.Gui.InputUi
                         ImGui.EndPopup();
                     }
 
-                    var multiInput = (MultiInputSlot<T>)typedInputSlot;
-                    var allInputs = multiInput.GetCollectedTypedInputs();
+                    _ = typedInputSlot.TryGetAsMultiInput(out var multiInput);
+                    var allInputs = multiInput.InputConnections;
 
                     for (int multiInputIndex = 0; multiInputIndex < allInputs.Count; multiInputIndex++)
                     {
@@ -209,7 +209,7 @@ namespace T3.Editor.Gui.InputUi
 
                         ImGui.SetNextItemWidth(-1);
                         ImGui.PushStyleColor(ImGuiCol.Text, UiColors.StatusAutomated.Rgba);
-                        var slot = allInputs[multiInputIndex];
+                        var slot = (Slot<T>)allInputs[multiInputIndex];
                         DrawReadOnlyControl("##multiInputParam", ref slot.Value);
                         ImGui.PopStyleColor();
                         ImGui.PopID();

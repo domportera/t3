@@ -17,7 +17,7 @@ namespace T3.Editor.Gui.OutputUi
                        };
         }
         
-        protected override void DrawTypedValue(ISlot slot)
+        protected override void DrawTypedValue(OutputSlot slot)
         {
             if (slot is Slot<Point[]> typedSlot)
             {

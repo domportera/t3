@@ -34,9 +34,9 @@ namespace lib._3d.draw
             Output.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => Position;
-        IInputSlot ITransformable.RotationInput => null;
-        IInputSlot ITransformable.ScaleInput => null;
+        InputSlot ITransformable.TranslationInput => Position;
+        InputSlot ITransformable.RotationInput => null;
+        InputSlot ITransformable.ScaleInput => null;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "f1f1be0e-d5bc-4940-bbc1-88bfa958f0e1")]

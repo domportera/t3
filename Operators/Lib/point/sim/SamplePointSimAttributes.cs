@@ -19,9 +19,9 @@ namespace lib.point.sim
             OutBuffer.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => Center;
-        IInputSlot ITransformable.RotationInput => TextureRotate;
-        IInputSlot ITransformable.ScaleInput => TextureScale;
+        InputSlot ITransformable.TranslationInput => Center;
+        InputSlot ITransformable.RotationInput => TextureRotate;
+        InputSlot ITransformable.ScaleInput => TextureScale;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
         
         [Input(Guid = "d153e6a4-1ec9-4164-b39a-032e142ba7aa")]

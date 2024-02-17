@@ -29,12 +29,12 @@ namespace lib.exec
             Command.GetValue(context);
         }
 
-        private int Invalidate(ISlot slot)
+        private int Invalidate(SlotBase slot)
         {
             if (slot.IsConnected)
             {
                 // slot is an output of an composition op
-                slot.DirtyFlag.Target = Invalidate(slot.FirstConnection);
+                slot.DirtyFlag.Target = Invalidate(slot.FirstConnectedSlot);
             }
             else
             {
@@ -48,7 +48,7 @@ namespace lib.exec
                         {
                             var multiInput = (IMultiInputSlot)input;
                             int dirtySum = 0;
-                            foreach (var entry in multiInput.GetCollectedInputs())
+                            foreach (var entry in multiInput.InputConnections)
                             {
                                 dirtySum += Invalidate(entry);
                             }

@@ -407,7 +407,7 @@ namespace T3.Editor.Gui.Windows.Exploration
 
         public float Scatter = 20f;
         private float _lastScatter;
-        private ISlot _firstOutputSlot;
+        private OutputSlot _firstOutputSlot;
 
         private readonly ThumbnailCanvasRendering _thumbnailCanvasRendering = new();
         private static readonly Vector2 _thumbnailSize = new(160, 160 / 16f * 9);

@@ -29,7 +29,7 @@ namespace T3.Editor.Gui.OutputUi
 
         private static List<List<float>> _previousChannelValues;
         
-        protected override void DrawTypedValue(ISlot slot)
+        protected override void DrawTypedValue(OutputSlot slot)
         {
             if (slot is Slot<Dict<float>> typedSlot)
             {

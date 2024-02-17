@@ -23,6 +23,17 @@ namespace lib.math.@float
         
         [Input(Guid = "7773837e-104a-4b3d-a41f-cadbd9249af2")]
         public readonly InputSlot<float> Float = new();
-        
+
+        public bool TryExtractInputsFor(InputSlot inputSlot, out IEnumerable<ExtractedInput> extracted)
+        {
+            if (inputSlot is not InputSlot<float> floatSlot)
+            {
+                extracted = Array.Empty<ExtractedInput>();
+                return false;
+            }
+
+            extracted = new[] { new ExtractedInput(Float.Input, floatSlot.TypedInputValue) };
+            return true;
+        }
     }
 }

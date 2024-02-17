@@ -338,7 +338,7 @@ namespace T3.Editor.Gui.Graph.Interaction.Connections
             if (sourceInstance != null)
             {
                 var outputSlot = sourceInstance.Outputs[0];
-                var deps = new HashSet<ISlot>();
+                var deps = new HashSet<SlotBase>();
                 Structure.CollectSlotDependencies(outputSlot, deps);
 
                 foreach (var d in deps)
@@ -412,7 +412,7 @@ namespace T3.Editor.Gui.Graph.Interaction.Connections
             var sourceInstance = GraphCanvas.Current.CompositionOp.Children.SingleOrDefault(c => c.SymbolChildId == sourceUi.SymbolChild.Id);
             if (sourceInstance != null)
             {
-                var deps = new HashSet<ISlot>();
+                var deps = new HashSet<SlotBase>();
                 foreach (var inputSlot in sourceInstance.Inputs)
                 {
                     Structure.CollectSlotDependencies(inputSlot, deps);
@@ -658,7 +658,7 @@ namespace T3.Editor.Gui.Graph.Interaction.Connections
             InsertSymbolBrowser(symbolBrowser, childUi, instance, primaryOutput);
         }
 
-        private static void InsertSymbolBrowser(SymbolBrowser symbolBrowser, SymbolChildUi childUi, Instance instance, ISlot primaryOutput)
+        private static void InsertSymbolBrowser(SymbolBrowser symbolBrowser, SymbolChildUi childUi, Instance instance, OutputSlot primaryOutput)
         {
             StartOperation("Insert Operator");
             

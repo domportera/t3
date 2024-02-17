@@ -110,7 +110,7 @@ internal static class InputsAndOutputs
                 return node;
 
             var idValue = nameSyntax.Identifier.ValueText;
-            if (idValue == "InputSlot" || idValue == "MultiInputSlot")
+            if (idValue == "InputSlot" || idValue == "MultInputSlot")
                 LastInputNodeFound = node;
             else if (LastInputNodeFound == null && idValue == "Slot")
                 LastInputNodeFound = node;
@@ -156,7 +156,7 @@ internal static class InputsAndOutputs
                 return node;
 
             string idValue = nameSyntax.Identifier.ValueText;
-            if (idValue == "InputSlot" || idValue == "MultiInputSlot")
+            if (idValue == "InputSlot" || idValue == "MultInputSlot")
             {
                 var first = node.Declaration.Variables[0];
                 var id = first.Identifier.ValueText;
@@ -222,7 +222,7 @@ internal static class InputsAndOutputs
             @namespace += ".";
         var attributeString = "\n        [Input(Guid = \"" + Guid.NewGuid() + "\")]\n";
         var typeName = TypeNameRegistry.Entries[inputType];
-        var slotString = (multiInput ? "MultiInputSlot<" : "InputSlot<") + @namespace + typeName + ">";
+        var slotString = (multiInput ? "MultInputSlot<" : "InputSlot<") + @namespace + typeName + ">";
         var inputString = "        public readonly " + slotString + " " + inputName + " = new " + slotString + "();\n";
 
         var inputDeclaration = SyntaxFactory.ParseMemberDeclaration(attributeString + inputString);
@@ -373,7 +373,7 @@ internal static class InputsAndOutputs
                                       : $"\n        {foundAttributeString}\n";
 
             var typeName = TypeNameRegistry.Entries[inputType];
-            var slotString = (inputDef.IsMultiInput ? "MultiInputSlot<" : "InputSlot<") + @namespace + typeName + ">";
+            var slotString = (inputDef.IsMultiInput ? "MultInputSlot<" : "InputSlot<") + @namespace + typeName + ">";
             var inputString = "        public readonly " + slotString + " " + inputDef.Name + " = new " + slotString + "();\n";
 
             var inputDeclaration = SyntaxFactory.ParseMemberDeclaration(attributeString + inputString);

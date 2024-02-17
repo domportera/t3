@@ -35,7 +35,7 @@ namespace T3.Core.Operator
                 Index = index;
             }
 
-            public CurveId(IInputSlot inputSlot, int index = 0)
+            public CurveId(InputSlot inputSlot, int index = 0)
             {
                 SymbolChildId = inputSlot.Parent.SymbolChildId;
                 InputId = inputSlot.Id;
@@ -85,11 +85,11 @@ namespace T3.Core.Operator
             targetAnimator._animatedInputCurves.Add(newCurveId, newCurve);
         }
 
-        public Curve[] AddOrRestoreCurvesToInput(IInputSlot inputSlot, Curve[] originalCurves)
+        public Curve[] AddOrRestoreCurvesToInput(InputSlot inputSlot, Curve[] originalCurves)
         {
             switch (inputSlot)
             {
-                case Slot<float> floatInputSlot:
+                case InputSlot<float> floatInputSlot:
                     return AddCurvesForFloatValue(inputSlot, new[] { floatInputSlot.Value }, originalCurves);
                 case Slot<System.Numerics.Vector2> vector2InputSlot:
                     return AddCurvesForFloatValue(inputSlot, vector2InputSlot.Value.ToArray(), originalCurves);
@@ -97,11 +97,11 @@ namespace T3.Core.Operator
                     return AddCurvesForFloatValue(inputSlot, vector3InputSlot.Value.ToArray(), originalCurves);
                 case Slot<System.Numerics.Vector4> vector4InputSlot:
                     return AddCurvesForFloatValue(inputSlot, vector4InputSlot.Value.ToArray(), originalCurves);
-                case Slot<int> intInputSlot:
+                case InputSlot<int> intInputSlot:
                     return AddCurvesForIntValue(inputSlot, new []{intInputSlot.Value}, originalCurves);
-                case Slot<Int2> size2InputSlot:
+                case InputSlot<Int2> size2InputSlot:
                     return AddCurvesForIntValue(inputSlot, new []{size2InputSlot.Value.Width, size2InputSlot.Value.Height }, originalCurves);
-                case Slot<bool> boolInputSlot:
+                case InputSlot<bool> boolInputSlot:
                     return AddCurvesForIntValue(inputSlot, new []{boolInputSlot.Value ? 1 :0 }, originalCurves);
                 default:
                     Log.Error("Could not create curves for this type");
@@ -111,7 +111,7 @@ namespace T3.Core.Operator
             return null;
         }
 
-        private Curve[] AddCurvesForFloatValue(IInputSlot inputSlot, float[] values, Curve[] originalCurves)
+        private Curve[] AddCurvesForFloatValue(InputSlot inputSlot, float[] values, Curve[] originalCurves)
         {
             var curves = originalCurves ?? new Curve[values.Length];
             for (var index = 0; index < values.Length; index++)
@@ -130,7 +130,7 @@ namespace T3.Core.Operator
             return curves;
         }
         
-        private Curve[] AddCurvesForIntValue(IInputSlot inputSlot, int[] values, Curve[] originalCurves)
+        private Curve[] AddCurvesForIntValue(InputSlot inputSlot, int[] values, Curve[] originalCurves)
         {
             var curves = originalCurves ?? new Curve[values.Length];
             for (var index = 0; index < values.Length; index++)
@@ -169,17 +169,17 @@ namespace T3.Core.Operator
                 if (count == 1)
                 {
                     var (inputSlot, curve) = groupEntry.First();
-                    if (inputSlot is Slot<float> typedInputSlot)
+                    if (inputSlot is InputSlot<float> typedInputSlot)
                     {
                         typedInputSlot.OverrideWithAnimationAction(context => { typedInputSlot.Value = (float)curve.GetSampledValue(context.LocalTime); });
                         typedInputSlot.DirtyFlag.Trigger |= DirtyFlagTrigger.Animated;
                     }
-                    else if (inputSlot is Slot<int> intSlot)
+                    else if (inputSlot is InputSlot<int> intSlot)
                     {
                         intSlot.OverrideWithAnimationAction(context => { intSlot.Value = (int)curve.GetSampledValue(context.LocalTime); });
                         intSlot.DirtyFlag.Trigger |= DirtyFlagTrigger.Animated;
                     }
-                    else if (inputSlot is Slot<bool> boolSlot)
+                    else if (inputSlot is InputSlot<bool> boolSlot)
                     {
                         boolSlot.OverrideWithAnimationAction(context => { boolSlot.Value = curve.GetSampledValue(context.LocalTime) > 0.5f; });
                         boolSlot.DirtyFlag.Trigger |= DirtyFlagTrigger.Animated;
@@ -198,7 +198,7 @@ namespace T3.Core.Operator
                                                         });
                         vector2InputSlot.DirtyFlag.Trigger |= DirtyFlagTrigger.Animated;
                     }
-                    else if (inputSlot is Slot<Int2> size2InputSlot)
+                    else if (inputSlot is InputSlot<Int2> size2InputSlot)
                     {
                         size2InputSlot.OverrideWithAnimationAction(context =>
                                                         {
@@ -222,7 +222,7 @@ namespace T3.Core.Operator
                                                         });
                         vector3InputSlot.DirtyFlag.Trigger |= DirtyFlagTrigger.Animated;
                     }
-                    else if (inputSlot is Slot<Int3> int3InputSlot)
+                    else if (inputSlot is InputSlot<Int3> int3InputSlot)
                     {
                         int3InputSlot.OverrideWithAnimationAction(context =>
                                                         {
@@ -268,7 +268,7 @@ namespace T3.Core.Operator
             }
         }
 
-        public void RemoveAnimationFrom(IInputSlot inputSlot)
+        public void RemoveAnimationFrom(InputSlot inputSlot)
         {
             inputSlot.RestoreUpdateAction();
             inputSlot.DirtyFlag.Trigger &= ~DirtyFlagTrigger.Animated;
@@ -284,13 +284,13 @@ namespace T3.Core.Operator
         
 
         
-        public bool TryGetFirstInputAnimationCurve(IInputSlot inputSlot, out Curve curve)
+        public bool TryGetFirstInputAnimationCurve(InputSlot inputSlot, out Curve curve)
         {
             return _animatedInputCurves.TryGetValue(new CurveId(inputSlot), out curve);
         }
 
         private static CurveId _lookUpKey;
-        public bool IsInputSlotAnimated(IInputSlot inputSlot)
+        public bool IsInputSlotAnimated(InputSlot inputSlot)
         {
             _lookUpKey.SymbolChildId = inputSlot.Parent.SymbolChildId;
             _lookUpKey.InputId = inputSlot.Id;
@@ -324,7 +324,7 @@ namespace T3.Core.Operator
             // return _animatedInputCurves.Any(c => c.Key.InstanceId == instance.Id);
         }
 
-        public IEnumerable<Curve> GetCurvesForInput(IInputSlot inputSlot)
+        public IEnumerable<Curve> GetCurvesForInput(InputSlot inputSlot)
         {
             return from curve in _animatedInputCurves
                    where curve.Key.SymbolChildId == inputSlot.Parent.SymbolChildId
@@ -425,7 +425,7 @@ namespace T3.Core.Operator
         /// <summary>
         /// This is used when loading operators 
         /// </summary>
-        public void AddCurvesToInput(List<Curve> curves, IInputSlot inputSlot)
+        public void AddCurvesToInput(List<Curve> curves, InputSlot inputSlot)
         {
             for (var index = 0; index < curves.Count; index++)
             {

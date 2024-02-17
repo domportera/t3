@@ -22,7 +22,7 @@ namespace T3.Editor.Gui.InputUi.VectorInputs
             return CloneWithType<Vector4InputUi>();
         }
 
-        public override void ApplyValueToAnimation(IInputSlot inputSlot, InputValue inputValue, Animator animator, double time)
+        public override void ApplyValueToAnimation(InputSlot inputSlot, InputValue inputValue, Animator animator, double time)
         {
             if (inputValue is not InputValue<Vector4> typedInputValue)
                 return;

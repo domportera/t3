@@ -34,29 +34,16 @@ namespace lib.color
             //     Log.Debug("Gradients count:" + Gradients.Value.Steps.Count);
             //     return;
             // }
-            var gradients = new List<Gradient>(4);
+            var gradients = Gradients.GetValues(context);
             var useHorizontal = Direction.GetValue(context) == 0;
-            int gradientsCount = 0;
-            if (Gradients.IsConnected)
-            {
-                gradientsCount = Gradients.CollectedInputs.Count;
-                if (gradientsCount == 0)
-                    return;
-                
-                var gradientsCollectedInputs = Gradients.CollectedInputs;
-                foreach (var gradientsInput in gradientsCollectedInputs)
-                {
-                    gradients.Add(gradientsInput.GetValue(context));
-                }                
-            }
-            else
-            {
-                var g = Gradients.GetValue(context);
-                gradientsCount = 1;
-                gradients.Add(g);
-            }
+            int gradientsCount = gradients.Count;
 
-            var sampleCount = Resolution.GetValue(context).Clamp(1,16384);
+            var resolutionValues = Resolution.GetValues(context);
+            int sampleCount;
+            if (resolutionValues.Count == 0)
+                sampleCount = 1;
+            else
+                sampleCount = resolutionValues[0].Clamp(1, 16384);
             const int entrySizeInBytes = sizeof(float) * 4;
             var gradientSizeInBytes = sampleCount * entrySizeInBytes;
             var bufferSizeInBytes = gradientsCount * gradientSizeInBytes;

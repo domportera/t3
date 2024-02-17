@@ -405,7 +405,7 @@ namespace T3.Editor.Gui.Interaction.TransformGizmos
             return new Vector3(newTranslation.X, newTranslation.Y, newTranslation.Z);
         }
 
-        private static Vector3 TryGetVectorFromInput(IInputSlot input, float defaultValue = 0f)
+        private static Vector3 TryGetVectorFromInput(InputSlot input, float defaultValue = 0f)
         {
             return input switch
                        {
@@ -415,7 +415,7 @@ namespace T3.Editor.Gui.Interaction.TransformGizmos
                        };
         }
 
-        private static void TrySetVector3ToInput(IInputSlot input, Vector3 vector3)
+        private static void TrySetVector3ToInput(InputSlot input, Vector3 vector3)
         {
             switch (input)
             {

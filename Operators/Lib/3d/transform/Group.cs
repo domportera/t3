@@ -20,9 +20,9 @@ namespace lib._3d.transform
         [Output(Guid = "977ca2f4-cddb-4b9a-82b2-ff66453bbf9b")]
         public readonly Slot<Command> Output = new();
         
-        IInputSlot ITransformable.TranslationInput => Translation;
-        IInputSlot ITransformable.RotationInput => Rotation;
-        IInputSlot ITransformable.ScaleInput => Scale;
+        InputSlot ITransformable.TranslationInput => Translation;
+        InputSlot ITransformable.RotationInput => Rotation;
+        InputSlot ITransformable.ScaleInput => Scale;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         public Group()
@@ -54,7 +54,7 @@ namespace lib._3d.transform
             var previousWorldTobject = context.ObjectToWorld;
             context.ObjectToWorld = Matrix4x4.Multiply(objectToParentObject, context.ObjectToWorld);
             
-            var commands = Commands.CollectedInputs;
+            var commands = Commands.InputConnectionsTyped;
             if (IsEnabled.GetValue(context))
             {
                 foreach (var t1 in commands)

@@ -33,7 +33,7 @@ namespace T3.Editor.Gui.InputUi.VectorInputs
         }
 
 
-        public override void ApplyValueToAnimation(IInputSlot inputSlot, InputValue inputValue, Animator animator, double time)
+        public override void ApplyValueToAnimation(InputSlot inputSlot, InputValue inputValue, Animator animator, double time)
         {
             if (inputValue is not InputValue<Int3> typedInputValue)
                 return;

@@ -37,7 +37,7 @@ namespace lib.point._internal
 
         private void Update(EvaluationContext context)
         {
-            var connections = Input.GetCollectedTypedInputs();
+            var connections = Input.InputConnectionsTyped;
             var selectedIndex = Index.GetValue(context).Clamp(0, connections.Count-1);
 
             if (connections.Count == 0)

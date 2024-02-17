@@ -19,7 +19,7 @@ namespace lib.exec
 
         private void Update(EvaluationContext context)
         {
-            var commands = Command.CollectedInputs;
+            var commands = Command.InputConnectionsTyped;
             if (IsEnabled.GetValue(context))
             {
                 // do preparation if needed

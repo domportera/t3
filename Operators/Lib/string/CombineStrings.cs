@@ -23,7 +23,7 @@ namespace lib.@string
             var separator = Separator.GetValue(context).Replace("\\n", "\n");
 
             var isFirst = true;
-            foreach (var input in Input.GetCollectedTypedInputs())
+            foreach (var input in Input.InputConnectionsTyped)
             {
                 if (!isFirst && !string.IsNullOrEmpty(separator))
                     _stringBuilder.Append(separator);

@@ -67,7 +67,7 @@ internal static class Combine
                 inputStringBuilder.AppendLine(attributeString);
                 var newInputName = inputNameHashSet.Contains(input.Name) ? (input.Name + inputNameCounter++) : input.Name;
                 inputNameHashSet.Add(newInputName);
-                var slotString = (input.IsMultiInput ? "MultiInputSlot<" : "InputSlot<") + typeName + ">";
+                var slotString = (input.IsMultiInput ? "MultInputSlot<" : "InputSlot<") + typeName + ">";
                 var inputString = "        public readonly " + slotString + " " + newInputName + " = new " + slotString + "();";
                 inputStringBuilder.AppendLine(inputString);
                 inputStringBuilder.AppendLine("");

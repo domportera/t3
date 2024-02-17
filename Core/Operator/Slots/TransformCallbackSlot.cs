@@ -33,19 +33,16 @@ namespace T3.Core.Operator.Slots
         
         
         protected override void SetDisabled(bool shouldBeDisabled)
-        {
-            if (shouldBeDisabled == _isDisabled)
-                return;
-
+        {   
             if (shouldBeDisabled)
             {
-                if (_keepOriginalUpdateAction != null)
+                if (KeepOriginalUpdateAction != null)
                 {
                     Log.Warning("Is already bypassed or disabled");
                     return;
                 }
                 
-                _keepOriginalUpdateAction = _baseUpdateAction;
+                KeepOriginalUpdateAction = _baseUpdateAction;
                 base.UpdateAction = EmptyAction;
                 DirtyFlag.Invalidate();
             }
@@ -53,23 +50,7 @@ namespace T3.Core.Operator.Slots
             {
                 RestoreUpdateAction();
             }
-
-            _isDisabled = shouldBeDisabled;
         }
 
-        public override bool TrySetBypassToInput(Slot<T> targetSlot)
-        {
-            if (_keepOriginalUpdateAction != null)
-            {
-                Log.Warning("Already disabled or bypassed");
-                return false;
-            }
-            
-            _keepOriginalUpdateAction = _baseUpdateAction;
-            base.UpdateAction = ByPassUpdate;
-            DirtyFlag.Invalidate();
-            _targetInputForBypass = targetSlot;
-            return true;
-        }
     }
 }

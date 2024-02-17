@@ -13,12 +13,12 @@ namespace T3.Editor.Gui.Graph.Interaction;
 
 internal static class ParameterExtraction
 {
-    public static bool IsInputSlotExtractable(IInputSlot inputSlot)
+    public static bool IsInputSlotExtractable(InputSlot inputSlot)
     {
         return _symbolIdsForTypes.ContainsKey(inputSlot.ValueType);
     }
     
-    public static void ExtractAsConnectedOperator(IInputSlot inputSlot, SymbolChildUi symbolChildUi, SymbolChild.Input input)
+    public static void ExtractAsConnectedOperator(InputSlot inputSlot, SymbolChildUi symbolChildUi, SymbolChild.Input input)
     {
         var composition = NodeSelection.GetSelectedComposition() ?? inputSlot.Parent.Parent;
         if (composition == null)

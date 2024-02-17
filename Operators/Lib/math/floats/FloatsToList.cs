@@ -20,7 +20,7 @@ namespace lib.math.floats
         private void Update(EvaluationContext context)
         {
             Result.Value.Clear();
-            foreach (var input in Input.GetCollectedTypedInputs())
+            foreach (var input in Input.InputConnectionsTyped)
             {
                 Result.Value.Add(input.GetValue(context));
             }

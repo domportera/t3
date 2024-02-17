@@ -10,6 +10,6 @@ namespace T3.Editor.Gui.OutputUi
         Symbol.OutputDefinition OutputDefinition { get; set; }
         Type Type { get; }
         IOutputUi Clone();
-        void DrawValue(ISlot slot, EvaluationContext context, bool recompute = true);
+        void DrawValue(OutputSlot slot, EvaluationContext context, bool recompute = true);
     }
 }

@@ -20,9 +20,9 @@ namespace lib.point.generate
             OutBuffer.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => Center;
-        IInputSlot ITransformable.RotationInput => null;
-        IInputSlot ITransformable.ScaleInput => null;
+        InputSlot ITransformable.TranslationInput => Center;
+        InputSlot ITransformable.RotationInput => null;
+        InputSlot ITransformable.ScaleInput => null;
 
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
         

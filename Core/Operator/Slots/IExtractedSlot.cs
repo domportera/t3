@@ -4,7 +4,7 @@ namespace T3.Core.Operator.Slots;
 
 public interface IExtractable
 {
-    public bool TryExtractInputsFor(IInputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters);
+    public bool TryExtractInputsFor(InputSlot inputSlot, out IEnumerable<ExtractedInput> inputParameters);
 }
 
 public readonly struct ExtractedInput

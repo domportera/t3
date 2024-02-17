@@ -25,7 +25,7 @@ namespace lib.dx11._
             
             _complainedOnce |= Input.DirtyFlag.IsDirty;
             
-            var connections = Input.GetCollectedTypedInputs();
+            var connections = Input.InputConnectionsTyped;
             if (connections != null && connections.Count > 0)
             {
                 for (int index = 0; index < connections.Count; index++)

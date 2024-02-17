@@ -24,7 +24,7 @@ namespace lib._3d.transform
         {
             try
             {
-                var cameraInputs = Cameras.GetCollectedTypedInputs();
+                var cameraInputs = Cameras.InputConnectionsTyped;
                 var cameraCount = cameraInputs.Count;
 
                 var floatIndex = Index.GetValue(context).Clamp(0, cameraCount - 1.0001f);

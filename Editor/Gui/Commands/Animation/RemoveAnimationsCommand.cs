@@ -10,7 +10,7 @@ namespace T3.Editor.Gui.Commands.Animation
         public string Name { get; set; }
         public bool IsUndoable => true;
         
-        public RemoveAnimationsCommand(Animator animator, IInputSlot[] inputSlots)
+        public RemoveAnimationsCommand(Animator animator, InputSlot[] inputSlots)
         {
             _animator = animator;
             _inputSlots = inputSlots;
@@ -51,7 +51,7 @@ namespace T3.Editor.Gui.Commands.Animation
         }
 
         private readonly Animator _animator;
-        private readonly IInputSlot[] _inputSlots;
+        private readonly InputSlot[] _inputSlots;
         private readonly List<List<Curve>> _curveSets = new();
     }
 }

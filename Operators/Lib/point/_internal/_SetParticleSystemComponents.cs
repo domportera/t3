@@ -24,7 +24,7 @@ namespace lib.point._internal
             _particleSystem.SpeedFactor = SpeedFactor.GetValue(context);
             _particleSystem.InitializeVelocityFactor = InitializeVelocityFactor.GetValue(context);
             
-            var effects = Effects.CollectedInputs;
+            var effects = Effects.InputConnectionsTyped;
             var keep = context.ParticleSystem;
             if (effects != null)
             {

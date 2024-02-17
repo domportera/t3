@@ -232,7 +232,7 @@ namespace T3.Editor.Gui.Windows.Exploration
             public List<Guid> InstanceIdPath = new();
             public Instance Instance => Structure.GetInstanceFromIdPath(InstanceIdPath);
             public SymbolChildUi SymbolChildUi;
-            public IInputSlot InputSlot { get; set; }
+            public InputSlot InputSlot { get; set; }
             public SymbolChild.Input Input;
             public Type Type;
             public float ScatterStrength = 1;

@@ -212,7 +212,7 @@ namespace T3.Core.Operator
                 
                 switch (mainOutputSlot)
                 {
-                    case Slot<Command> commandOutput when mainInputSlot is Slot<Command> commandInput:
+                    case Slot<Command> commandOutput when mainInputSlot is InputSlot<Command> commandInput:
                         if (shouldBypass)
                         {
                             wasByPassed= commandOutput.TrySetBypassToInput(commandInput);
@@ -224,7 +224,7 @@ namespace T3.Core.Operator
                         InvalidateConnected(commandInput);
                         break;
                     
-                    case Slot<BufferWithViews> bufferOutput when mainInputSlot is Slot<BufferWithViews> bufferInput:
+                    case Slot<BufferWithViews> bufferOutput when mainInputSlot is InputSlot<BufferWithViews> bufferInput:
                         if (shouldBypass)
                         {
                             wasByPassed= bufferOutput.TrySetBypassToInput(bufferInput);
@@ -235,7 +235,7 @@ namespace T3.Core.Operator
                         }
                         InvalidateConnected(bufferInput);
                         break;
-                    case Slot<MeshBuffers> bufferOutput when mainInputSlot is Slot<MeshBuffers> bufferInput:
+                    case Slot<MeshBuffers> bufferOutput when mainInputSlot is InputSlot<MeshBuffers> bufferInput:
                         if (shouldBypass)
                         {
                             wasByPassed= bufferOutput.TrySetBypassToInput(bufferInput);
@@ -247,7 +247,7 @@ namespace T3.Core.Operator
                         InvalidateConnected(bufferInput);
 
                         break;
-                    case Slot<Texture2D> texture2dOutput when mainInputSlot is Slot<Texture2D> texture2dInput:
+                    case Slot<Texture2D> texture2dOutput when mainInputSlot is InputSlot<Texture2D> texture2dInput:
                         if (shouldBypass)
                         {
                             wasByPassed= texture2dOutput.TrySetBypassToInput(texture2dInput);
@@ -259,7 +259,7 @@ namespace T3.Core.Operator
                         InvalidateConnected(texture2dInput);
 
                         break;
-                    case Slot<float> floatOutput when mainInputSlot is Slot<float> floatInput:
+                    case Slot<float> floatOutput when mainInputSlot is InputSlot<float> floatInput:
                         if (shouldBypass)
                         {
                             wasByPassed= floatOutput.TrySetBypassToInput(floatInput);
@@ -296,7 +296,7 @@ namespace T3.Core.Operator
                         InvalidateConnected(vec3Input);
 
                         break;
-                    case Slot<string> stringOutput when mainInputSlot is Slot<string> stringInput:
+                    case Slot<string> stringOutput when mainInputSlot is InputSlot<string> stringInput:
                         if (shouldBypass)
                         {
                             wasByPassed= stringOutput.TrySetBypassToInput(stringInput);

@@ -46,7 +46,7 @@ namespace lib._3d.mesh._
 
         private void Update(EvaluationContext context)
         {
-            var connections = Meshes.GetCollectedTypedInputs();
+            var connections = Meshes.InputConnectionsTyped;
             var selectedIndex = Index.GetValue(context).Clamp(0, connections.Count-1);
 
             if (connections.Count == 0)

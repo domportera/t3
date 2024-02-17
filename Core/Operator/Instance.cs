@@ -16,9 +16,9 @@ namespace T3.Core.Operator
         public Instance Parent { get; internal set; }
         public abstract Symbol Symbol { get; }
 
-        public List<ISlot> Outputs { get; set; } = new();
+        public List<OutputSlot> Outputs { get; set; } = new();
         public List<Instance> Children { get; set; } = new();
-        public List<IInputSlot> Inputs { get; set; } = new();
+        public List<InputSlot> Inputs { get; set; } = new();
 
         protected internal ResourceFileWatcher ResourceFileWatcher => Symbol.SymbolPackage.ResourceFileWatcher;
 
@@ -39,7 +39,7 @@ namespace T3.Core.Operator
         /// <summary>
         /// get input without GC allocations 
         /// </summary>
-        public IInputSlot GetInput(Guid guid)
+        public InputSlot GetInput(Guid guid)
         {
             //return Inputs.SingleOrDefault(input => input.Id == guid);
             foreach (var i in Inputs)
@@ -62,7 +62,7 @@ namespace T3.Core.Operator
             var assemblyInfo = Symbol.SymbolPackage.AssemblyInformation;
             foreach (var input in assemblyInfo.InputFields[Type])
             {
-                var inputSlot = (IInputSlot)input.Field.GetValue(this);
+                var inputSlot = (InputSlot)input.Field.GetValue(this);
                 inputSlot!.Parent = this;
                 inputSlot.Id = input.Attribute.Id;
                 inputSlot.MappedType = input.Attribute.MappedType;
@@ -72,7 +72,7 @@ namespace T3.Core.Operator
             // outputs identified by attribute
             foreach (var output in assemblyInfo.OutputFields[Type])
             {
-                var slot = (ISlot)output.Field.GetValue(this);
+                var slot = (OutputSlot)output.Field.GetValue(this);
                 slot!.Parent = this;
                 slot.Id = output.Attribute.Id;
                 Outputs.Add(slot);
@@ -87,7 +87,16 @@ namespace T3.Core.Operator
             if (!gotSource || !gotTarget)
                 return false;
 
-            targetSlot.AddConnection(sourceSlot, multiInputIndex);
+            if (!targetSlot.IsMultiInput)
+            {
+                targetSlot.AddConnection(sourceSlot);
+            }
+            else
+            {
+                _ = targetSlot.TryGetAsMultiInput(out var multiInput);
+                multiInput.AddConnection(sourceSlot, multiInputIndex);
+            }
+
             sourceSlot.DirtyFlag.Invalidate();
             return true;
         }
@@ -97,22 +106,31 @@ namespace T3.Core.Operator
             var success = TryGetTargetSlot(connection, out var targetSlot);
             if (!success)
                 return;
-            targetSlot.RemoveConnection(index);
+
+            if (targetSlot.IsMultiInput)
+            {
+                _ = targetSlot.TryGetAsMultiInput(out var multiInput);
+                multiInput.RemoveConnection(index);
+            }
+            else
+            {
+                targetSlot.RemoveConnection();
+            }
         }
 
-        private bool TryGetSourceSlot(Symbol.Connection connection, out ISlot sourceSlot)
+        private bool TryGetSourceSlot(Symbol.Connection connection, out OutputSlot sourceSlot)
         {
             var compositionInstance = this;
 
             // Get source Instance
             Instance sourceInstance = null;
             var gotSourceInstance = false;
-            
-            foreach(var child in compositionInstance.Children)
+
+            foreach (var child in compositionInstance.Children)
             {
                 if (child.SymbolChildId != connection.SourceParentOrChildId)
                     continue;
-                
+
                 sourceInstance = child;
                 gotSourceInstance = true;
                 break;
@@ -127,25 +145,36 @@ namespace T3.Core.Operator
                 return false;
             }
 
-            // Get source Slot
-            var sourceSlotList = gotSourceInstance ? sourceInstance.Outputs : compositionInstance.Inputs.Cast<ISlot>();
-            sourceSlot = null;
-            var gotSourceSlot = false;
-            
-            foreach(var slot in sourceSlotList)
+            if (gotSourceInstance)
             {
-                if (slot.Id != connection.SourceSlotId)
-                    continue;
-                
-                sourceSlot = slot;
-                gotSourceSlot = true;
-                break;
+                var outputs = sourceInstance.Outputs;
+                foreach (var output in outputs)
+                {
+                    if (output.Id != connection.SourceSlotId)
+                        continue;
+
+                    sourceSlot = output;
+                    return true;
+                }
             }
-            
-            return gotSourceSlot;
+            else
+            {
+                var inputs = compositionInstance.Inputs;
+                foreach (var input in inputs)
+                {
+                    if (input.Id != connection.SourceSlotId)
+                        continue;
+
+                    sourceSlot = input.LinkSlot;
+                    return true;
+                }
+            }
+
+            sourceSlot = null;
+            return false;
         }
 
-        private bool TryGetTargetSlot(Symbol.Connection connection, out ISlot targetSlot)
+        private bool TryGetTargetSlot(Symbol.Connection connection, out InputSlot targetSlot)
         {
             var compositionInstance = this;
 
@@ -153,32 +182,39 @@ namespace T3.Core.Operator
 
             Instance targetInstance = null;
             bool gotTargetInstance = false;
-            
-            foreach(var child in compositionInstance.Children)
+
+            foreach (var child in compositionInstance.Children)
             {
                 if (child.SymbolChildId != connection.TargetParentOrChildId)
                     continue;
-                
+
                 targetInstance = child;
                 gotTargetInstance = true;
                 break;
             }
 
-            // Get target Slot
-            var targetSlotList = gotTargetInstance ? targetInstance.Inputs.Cast<ISlot>() : compositionInstance.Outputs;
-
-            targetSlot = null;
-            var gotTargetSlot = false;
-            foreach(var slot in targetSlotList)
+            if (gotTargetInstance)
             {
-                if (slot.Id != connection.TargetSlotId)
-                    continue;
-                
-                targetSlot = slot;
-                gotTargetSlot = true;
-                break;
-            }
+                foreach (var input in targetInstance.Inputs)
+                {
+                    if (input.Id != connection.TargetSlotId)
+                        continue;
 
+                    targetSlot = input;
+                    return true;
+                }
+            }
+            else
+            {
+                foreach (var output in compositionInstance.Outputs)
+                {
+                    if (output.Id != connection.TargetSlotId)
+                        continue;
+
+                    targetSlot = output.LinkSlot;
+                    return true;
+                }
+            }
             #if DEBUG
             if (!gotTargetInstance)
             {
@@ -186,7 +222,8 @@ namespace T3.Core.Operator
             }
             #endif
 
-            return gotTargetSlot;
+            targetSlot = null;
+            return false;
         }
 
         private static void GatherResourceFolders(Instance instance, out List<string> resourceFolders)

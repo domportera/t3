@@ -24,7 +24,7 @@ namespace T3.Editor.Gui.OutputUi
         private static float _minFit = -1;
         private static float _maxFit = 1;
         
-        protected override void DrawTypedValue(ISlot slot)
+        protected override void DrawTypedValue(OutputSlot slot)
         {
             if (slot is Slot<List<float>> typedSlot)
             {

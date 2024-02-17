@@ -20,9 +20,9 @@ namespace lib.img.analyze
             TextureOutput.TransformableOp = this;
         }
         
-        IInputSlot ITransformable.TranslationInput => Center;
-        IInputSlot ITransformable.RotationInput => null;
-        IInputSlot ITransformable.ScaleInput => null;
+        InputSlot ITransformable.TranslationInput => Center;
+        InputSlot ITransformable.RotationInput => null;
+        InputSlot ITransformable.ScaleInput => null;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "5537a990-0d27-4e91-912e-8f913a734722")]

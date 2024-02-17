@@ -5,136 +5,25 @@ using T3.Core.DataTypes;
 using T3.Core.Logging;
 using T3.Core.Operator.Interfaces;
 using T3.Core.Stats;
+
 // ReSharper disable ConvertToAutoPropertyWhenPossible
 
 namespace T3.Core.Operator.Slots
 {
-    public class Slot<T> : ISlot
+    public abstract class SlotBase
     {
         public Guid Id;
         public readonly Type ValueType;
-        Type ISlot.ValueType => ValueType;
-        public Instance Parent { get => _parent; set => _parent = value; }
-
         public readonly DirtyFlag DirtyFlag = new();
-        
-        public T Value;
+        public Instance Parent;
 
-        protected bool _isDisabled;
-
-        protected virtual void SetDisabled(bool shouldBeDisabled)
-        {
-            if (shouldBeDisabled == _isDisabled)
-                return;
-
-            if (shouldBeDisabled)
-            {
-                if (_keepOriginalUpdateAction != null)
-                {
-                    Log.Warning("Is already bypassed or disabled");
-                    return;
-                }
-                
-                _keepOriginalUpdateAction = UpdateAction;
-                _keepDirtyFlagTrigger = DirtyFlag.Trigger;
-                UpdateAction = EmptyAction;
-                DirtyFlag.Invalidate();
-            }
-            else
-            {
-                RestoreUpdateAction();
-            }
-
-            _isDisabled = shouldBeDisabled;
-        }
-        
-        public bool TryGetAsMultiInputTyped(out MultiInputSlot<T> multiInput)
-        {
-            multiInput = ThisAsMultiInputSlot;
-            return IsMultiInput;
-        }
-
-        public virtual bool TrySetBypassToInput(Slot<T> targetSlot)
-        {
-            if (_keepOriginalUpdateAction != null)
-            {
-                //Log.Warning("Already disabled or bypassed");
-                return false;
-            }
-            
-            _keepOriginalUpdateAction = UpdateAction;
-            _keepDirtyFlagTrigger = DirtyFlag.Trigger;
-            UpdateAction = ByPassUpdate;
-            DirtyFlag.Invalidate();
-            _targetInputForBypass = targetSlot;
-            return true;
-        }
-
-        public void OverrideWithAnimationAction(Action<EvaluationContext> newAction)
-        {
-            // Animation actions are updated regardless if operator was already animated
-            if (_keepOriginalUpdateAction == null)
-            {
-                _keepOriginalUpdateAction = UpdateAction;
-                _keepDirtyFlagTrigger = DirtyFlag.Trigger;
-            }
-
-            UpdateAction = newAction;
-            DirtyFlag.Invalidate();
-        }
-        
-        public virtual void RestoreUpdateAction()
-        {
-            // This will happen when operators are recompiled and output slots are disconnected
-            if (_keepOriginalUpdateAction == null)
-            {
-                UpdateAction = null;
-                return;
-            }
-            
-            UpdateAction = _keepOriginalUpdateAction;
-            _keepOriginalUpdateAction = null;
-            DirtyFlag.Trigger = _keepDirtyFlagTrigger;
-            DirtyFlag.Invalidate();
-        }
-
-        public bool IsDisabled 
-        {
-            get => _isDisabled;
-            set => SetDisabled(value);
-        }
-
-        // ReSharper disable once StaticMemberInGenericType
-        protected static readonly Action<EvaluationContext> EmptyAction = _ => { };
-
-        public Slot()
+        protected SlotBase(Type type)
         {
             // UpdateAction = Update;
-            ValueType = typeof(T);
+            ValueType = type;
             _valueIsCommand = ValueType == typeof(Command);
-            
-            if (this is IInputSlot)
-            {
-                _isInputSlot = true;
-            }
         }
 
-        public Slot(T defaultValue) : this()
-        {
-            Value = defaultValue;
-        }
-        
-        // dummy constructor to initialize input slot values
-        // ReSharper disable once UnusedParameter.Local
-        protected Slot(bool _) : this()
-        {
-            _isInputSlot = true;
-            if (this is MultiInputSlot<T> multiInputSlot)
-            {
-                IsMultiInput = true;
-                ThisAsMultiInputSlot = multiInputSlot;
-            }
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Update(EvaluationContext context)
@@ -148,179 +37,95 @@ namespace T3.Core.Operator.Slots
             }
         }
 
-        public void ConnectedUpdate(EvaluationContext context)
-        {
-            Value = InputConnections[0].GetValue(context);
-        }
-        
-        public void ByPassUpdate(EvaluationContext context)
-        {
-            Value = _targetInputForBypass.GetValue(context);
-        }
+        public abstract int Invalidate();
 
-        public T GetValue(EvaluationContext context)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected bool AlreadyInvalidated(out DirtyFlag dirtyFlag)
         {
-            Update(context);
-
-            return Value;
+            dirtyFlag = DirtyFlag;
+            return dirtyFlag.IsAlreadyInvalidated || dirtyFlag.HasBeenVisited;
         }
 
-        public void AddConnection(ISlot sourceSlot, int index = 0)
+        public abstract bool IsConnected { get; }
+        private readonly bool _valueIsCommand;
+
+        public void RestoreUpdateAction()
         {
-            if (!IsConnected)
+            // This will happen when operators are recompiled and output slots are disconnected
+            if (KeepOriginalUpdateAction == null)
             {
-                if (UpdateAction != null)
-                {
-                    _actionBeforeAddingConnecting = UpdateAction;
-                    if (Parent.Children.Count > 0 && Parent is ICompoundWithUpdate compoundWithUpdate && this is not IInputSlot)
-                    {
-                        //Log.Debug($"Skipping connection for compound op with update method for {Parent.Symbol} {this}", compoundWithUpdate);
-                        //compoundWithUpdate.RegisterOutputUpdateAction(this, ConnectedUpdate);
-                        InputConnections.Insert(index, (Slot<T>)sourceSlot);
-                        DirtyFlag.Target = sourceSlot.DirtyFlag.Target;
-                        DirtyFlag.Reference = DirtyFlag.Target - 1;
-                        return;
-                    }
-                }
-                UpdateAction = ConnectedUpdate;
-                DirtyFlag.Target = sourceSlot.DirtyFlag.Target;
-                DirtyFlag.Reference = DirtyFlag.Target - 1;
-            }
-            
-            if (sourceSlot.ValueType != ValueType)
-            {
-                Log.Warning("Type mismatch during connection");
+                UpdateAction = null;
                 return;
             }
-            InputConnections.Insert(index, (Slot<T>)sourceSlot);
+
+            UpdateAction = KeepOriginalUpdateAction;
+            KeepOriginalUpdateAction = null;
+            DirtyFlag.Trigger = KeepDirtyFlagTrigger;
+            DirtyFlag.Invalidate();
         }
 
-        private Action<EvaluationContext> _actionBeforeAddingConnecting;
-
-        public void RemoveConnection(int index = 0)
+        protected virtual void SetDisabled(bool shouldBeDisabled)
         {
-            if (IsConnected)
-            {
-                if (index < InputConnections.Count)
-                {
-                    InputConnections.RemoveAt(index);
-                }
-                else
-                {
-                    Log.Error($"Trying to delete connection at index {index}, but input slot only has {InputConnections.Count} connections");
-                }
-            }
+            if (shouldBeDisabled == _isDisabled)
+                return;
 
-            if (!IsConnected)
+            if (shouldBeDisabled)
             {
-                if (_actionBeforeAddingConnecting != null)
+                if (KeepOriginalUpdateAction != null)
                 {
-                    UpdateAction = _actionBeforeAddingConnecting;
+                    Log.Warning("Is already bypassed or disabled");
+                    return;
                 }
-                else
-                {
-                    // if no connection is set anymore restore the default update action
-                    RestoreUpdateAction();
-                }
+
+                KeepOriginalUpdateAction = UpdateAction;
+                KeepDirtyFlagTrigger = DirtyFlag.Trigger;
+                UpdateAction = EmptyAction;
                 DirtyFlag.Invalidate();
-            }
-        }
-
-        public bool IsConnected => InputConnections.Count > 0;
-
-        public ISlot FirstConnection => InputConnections[0];
-
-        protected readonly List<Slot<T>> InputConnections = [];
-
-        public virtual int Invalidate()
-        {
-            // ReSharper disable once InlineTemporaryVariable
-            var dirtyFlag = DirtyFlag;
-            
-            if (dirtyFlag.IsAlreadyInvalidated || dirtyFlag.HasBeenVisited)
-                return dirtyFlag.Target;
-
-            // reduce the number of method (property) calls
-
-            if (IsConnected)
-            {
-                dirtyFlag.Target = FirstConnection.Invalidate();
-            }
-            else if (_isInputSlot)
-            {
-                if(dirtyFlag.Trigger != DirtyFlagTrigger.None)
-                    dirtyFlag.Invalidate();
             }
             else
             {
-                var parentInputs = _parent.Inputs;
-                
-                bool outputDirty = dirtyFlag.IsDirty;
-                foreach (var input in parentInputs)
-                {
-                    var inputFlag = input.DirtyFlag;
-                    if (input.IsConnected)
-                    {
-                        int target;
-                        if (input.TryGetAsMultiInput(out var multiInput))
-                        {
-                            // NOTE: In situations with extremely large graphs (1000 of instances)
-                            // invalidation can become bottle neck. In these cases it might be justified
-                            // to limit the invalidation to "active" parts of the subgraph. The [Switch]
-                            // operator defines this list.
-                            var multiInputLimitList = multiInput.LimitMultiInputInvalidationToIndices;
-                            var hasLimitList = multiInputLimitList.Count > 0;
-
-                            var collectedInputs = multiInput.GetCollectedInputs();
-                            var collectedCount = collectedInputs.Count;
-                            target = 0;
-                            for (var i = 0; i < collectedCount; i++)
-                            {
-                                if (hasLimitList && !multiInputLimitList.Contains(i))
-                                    continue;
-
-                                target += collectedInputs[i].Invalidate();
-                            }
-                        }
-                        else
-                        {
-                            target = input.FirstConnection.Invalidate();
-                        }
-                        
-                        inputFlag.Target = target;
-                    }
-                    else if ((inputFlag.Trigger & DirtyFlagTrigger.Animated) == DirtyFlagTrigger.Animated)
-                    {
-                        inputFlag.Invalidate();
-                    }
-
-                    inputFlag.SetVisited();
-                    outputDirty |= inputFlag.IsDirty;
-                }
-
-                if (outputDirty || (dirtyFlag.Trigger & DirtyFlagTrigger.Animated) == DirtyFlagTrigger.Animated)
-                {
-                    dirtyFlag.Invalidate();
-                }
+                RestoreUpdateAction();
             }
-
-            dirtyFlag.SetVisited();
-            return dirtyFlag.Target;
         }
 
-        Guid ISlot.Id { get => Id; set => Id = value; }
-        DirtyFlag ISlot.DirtyFlag => DirtyFlag;
+        public void OverrideWithAnimationAction(Action<EvaluationContext> newAction)
+        {
+            // Animation actions are updated regardless if operator was already animated
+            if (KeepOriginalUpdateAction == null)
+            {
+                KeepOriginalUpdateAction = UpdateAction;
+                KeepDirtyFlagTrigger = DirtyFlag.Trigger;
+            }
+
+            UpdateAction = newAction;
+            DirtyFlag.Invalidate();
+        }
 
         public virtual Action<EvaluationContext> UpdateAction { get; set; }
 
-        protected Action<EvaluationContext> _keepOriginalUpdateAction;
-        private DirtyFlagTrigger _keepDirtyFlagTrigger;
-        protected Slot<T> _targetInputForBypass;
-        
-        private readonly bool _isInputSlot;
-        public readonly bool IsMultiInput;
-        protected readonly MultiInputSlot<T> ThisAsMultiInputSlot;
-        private Instance _parent;
-        private readonly bool _valueIsCommand;
+        // ReSharper disable once StaticMemberInGenericType
+        protected static readonly Action<EvaluationContext> EmptyAction = _ => { };
+
+        protected Action<EvaluationContext> KeepOriginalUpdateAction;
+        protected DirtyFlagTrigger KeepDirtyFlagTrigger;
+
+        public bool IsDisabled
+        {
+            get => _isDisabled;
+            set
+            {
+                if (_isDisabled == value)
+                    return;
+                
+                SetDisabled(value);
+                _isDisabled = value;
+            }
+        }
+
+
+        private bool _isDisabled;
+        public abstract SlotBase FirstConnectedSlot { get; }
     }
+
+    // Todo: this is an output slot - should be renamed in the future
 }
