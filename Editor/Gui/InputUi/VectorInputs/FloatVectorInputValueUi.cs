@@ -78,7 +78,7 @@ namespace T3.Editor.Gui.InputUi.VectorInputs
             return string.Format(T3Ui.FloatNumberFormat, float2Value);
         }
 
-        public abstract override void ApplyValueToAnimation(IInputSlot inputSlot, InputValue inputValue, Animator animator, double time);
+        public abstract override void ApplyValueToAnimation(InputSlot inputSlot, InputValue inputValue, Animator animator, double time);
 
         private struct ValueSettingPreset
         {

@@ -50,8 +50,17 @@ namespace lib._3d.draw
             }
             
             // Inner update
-            Output.ConnectedUpdate(context);
-            context.PbrMaterial = previousMaterial;
+            //Output.ConnectedUpdate(context);
+
+            if (Output.ConnectedSlot is InputSlot<Command> commandSlot)
+            {
+                Output.Value = commandSlot.GetValue(context);
+                context.PbrMaterial = previousMaterial;
+            }
+            else
+            {
+                Log.Error("Output slot is not connected to a valid command input slot. This is most likely a bug. Please report it!");
+            }
         }
 
         #region custom material dropdown

@@ -18,7 +18,7 @@ namespace user.pixtur.learning.cs._05_physarum
         public _SpeciesDefinition()
         {
             OutBuffer.UpdateAction = Update;
-            _slots = new List<IInputSlot>()
+            _slots = new List<InputSlot>()
                          {
                              ComfortZones,
                              Emit,
@@ -99,7 +99,7 @@ namespace user.pixtur.learning.cs._05_physarum
         
         
         private BreedList _breeds = new(1);
-        private readonly List<IInputSlot> _slots;
+        private readonly List<InputSlot> _slots;
         private bool _initialized;
         
         

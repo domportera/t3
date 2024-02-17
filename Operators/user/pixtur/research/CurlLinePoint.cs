@@ -21,9 +21,9 @@ namespace user.pixtur.research
         {
             Output.TransformableOp = this;
         }        
-        IInputSlot ITransformable.TranslationInput => Translation;
-        IInputSlot ITransformable.RotationInput => Rotation;
-        IInputSlot ITransformable.ScaleInput => Scale;
+        InputSlot ITransformable.TranslationInput => Translation;
+        InputSlot ITransformable.RotationInput => Rotation;
+        InputSlot ITransformable.ScaleInput => Scale;
         public Action<Instance, EvaluationContext> TransformCallback { get; set; }
 
         [Input(Guid = "c13a0f89-4f34-40fd-9d24-18f6b5e04890")]

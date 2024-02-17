@@ -9,7 +9,7 @@ namespace T3.Core.Operator.Slots
     public sealed class MultiInputSlot<T>() : MultInputSlot(typeof(T))
     {
         public override bool IsConnected => _inputConnectionsTyped.Count > 0;
-        public override IReadOnlyList<OutputSlot> InputConnections => _inputConnectionsTyped;
+        public override IReadOnlyList<OutputSlot> OutputsPluggedInToMe => _inputConnectionsTyped;
         public IReadOnlyList<Slot<T>> InputConnectionsTyped => _inputConnectionsTyped;
 
         public override OutputSlot FirstConnection => (_inputConnectionsTyped.Count > 0 ? _inputConnectionsTyped[0] : null)!;

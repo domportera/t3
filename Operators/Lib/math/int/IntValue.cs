@@ -6,7 +6,7 @@ using T3.Core.Operator.Slots;
 namespace lib.math.@int
 {
 	[Guid("cc07b314-4582-4c2c-84b8-bb32f59fc09b")]
-    public class IntValue : Instance<IntValue>
+    public class IntValue : Instance<IntValue>, IExtractable
     {
         [Output(Guid = "8A65B34B-40BE-4DBF-812C-D4C663464C7F")]
         public readonly Slot<int> Result = new();

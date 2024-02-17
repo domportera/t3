@@ -32,7 +32,7 @@ namespace user.cynic.research.data
             {
                 context.FloatVariables["iterator"] = index;
                 DirtyFlag.InvalidationRefFrame++;
-                foreach (var c in SubTree.CollectedInputs)
+                foreach (var c in SubTree.InputConnectionsTyped)
                 {
                     //Log.Debug($"  {index} {c}", this);
                     c.Invalidate();

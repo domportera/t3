@@ -44,11 +44,10 @@ namespace lib.exec
                 {
                     if (input.IsConnected)
                     {
-                        if (input.IsMultiInput)
+                        if (input.TryGetAsMultiInput(out var multiInput))
                         {
-                            var multiInput = (IMultiInputSlot)input;
                             int dirtySum = 0;
-                            foreach (var entry in multiInput.InputConnections)
+                            foreach (var entry in multiInput.OutputsPluggedInToMe)
                             {
                                 dirtySum += Invalidate(entry);
                             }

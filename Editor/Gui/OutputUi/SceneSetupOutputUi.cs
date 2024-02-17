@@ -17,7 +17,7 @@ public class SceneSetupOutputUi : OutputUi<float>
                    };
     }
     
-    protected override void DrawTypedValue(ISlot slot)
+    protected override void DrawTypedValue(OutputSlot slot)
     {
         if (slot is not Slot<SceneSetup> sceneSetupSlot)
             return;

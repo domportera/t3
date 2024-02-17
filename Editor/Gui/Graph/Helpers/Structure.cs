@@ -229,7 +229,7 @@ internal static class Structure
                 {
                     if (input.TryGetAsMultiInput(out var multiInput))
                     {
-                        foreach (var entry in multiInput.InputConnections)
+                        foreach (var entry in multiInput.OutputsPluggedInToMe)
                         {
                             CollectSlotDependencies(entry, all);
                         }

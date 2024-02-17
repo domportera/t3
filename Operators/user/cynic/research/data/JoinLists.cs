@@ -26,7 +26,7 @@ namespace user.cynic.research.data
 
         private void Update(EvaluationContext context)
         {
-            var connectedLists = Lists.CollectedInputs.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
+            var connectedLists = Lists.InputConnectionsTyped.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
             Lists.DirtyFlag.Clear();
             
             if (connectedLists.Count == 0)

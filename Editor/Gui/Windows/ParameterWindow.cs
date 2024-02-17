@@ -387,7 +387,7 @@ internal class ParameterWindow : Window
     private static readonly List<Window> _parameterWindowInstances = new();
     private ChangeSymbolChildNameCommand _symbolChildNameCommand;
     private static ChangeInputValueCommand _inputValueCommandInFlight;
-    private static IInputSlot _inputSlotForActiveCommand;
+    private static InputSlot _inputSlotForActiveCommand;
     private static int _instanceCounter;
     private OperatorHelp _help = new();
     public static readonly RenameInputDialog RenameInputDialog = new();

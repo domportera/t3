@@ -49,9 +49,9 @@ namespace lib.anim
             
             
 
-            var opIndex = OpIndex.GetValue(context).Clamp(0, AnimatedOp.InputConnections.Count);
+            var opIndex = OpIndex.GetValue(context).Clamp(0, AnimatedOp.OutputsPluggedInToMe.Count);
             _wrapIndex = WrapIndex.GetValue(context);
-            var slot = AnimatedOp.InputConnections[opIndex];
+            var slot = AnimatedOp.OutputsPluggedInToMe[opIndex];
             var requestCurveIndex = (int)CurveIndex.GetValue(context);
             if (TryFindCurveWithIndex(slot, requestCurveIndex, needsUpdate, out var curve))
             {

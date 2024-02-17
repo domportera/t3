@@ -179,7 +179,7 @@ namespace T3.Editor.Gui.InputUi
                     }
 
                     _ = typedInputSlot.TryGetAsMultiInput(out var multiInput);
-                    var allInputs = multiInput.InputConnections;
+                    var allInputs = multiInput.OutputsPluggedInToMe;
 
                     for (int multiInputIndex = 0; multiInputIndex < allInputs.Count; multiInputIndex++)
                     {
@@ -623,7 +623,7 @@ namespace T3.Editor.Gui.InputUi
             Extract,
         }
 
-        private static void PublishAsInput(IInputSlot originalInputSlot, SymbolChildUi symbolChildUi, SymbolChild.Input input)
+        private static void PublishAsInput(InputSlot originalInputSlot, SymbolChildUi symbolChildUi, SymbolChild.Input input)
         {
             var composition = NodeSelection.GetSelectedComposition() ?? originalInputSlot.Parent.Parent;
 

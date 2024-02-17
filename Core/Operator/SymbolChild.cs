@@ -272,7 +272,7 @@ namespace T3.Core.Operator
 
                         break;
                     
-                    case Slot<System.Numerics.Vector2> vec2Output when mainInputSlot is Slot<System.Numerics.Vector2> vec2Input:
+                    case Slot<System.Numerics.Vector2> vec2Output when mainInputSlot is InputSlot<System.Numerics.Vector2> vec2Input:
                         if (shouldBypass)
                         {
                             wasByPassed= vec2Output.TrySetBypassToInput(vec2Input);
@@ -284,7 +284,7 @@ namespace T3.Core.Operator
                         InvalidateConnected(vec2Input);
 
                         break;
-                    case Slot<System.Numerics.Vector3> vec3Output when mainInputSlot is Slot<System.Numerics.Vector3> vec3Input:
+                    case Slot<System.Numerics.Vector3> vec3Output when mainInputSlot is InputSlot<System.Numerics.Vector3> vec3Input:
                         if (shouldBypass)
                         {
                             wasByPassed= vec3Output.TrySetBypassToInput(vec3Input);
@@ -313,11 +313,11 @@ namespace T3.Core.Operator
             }
         }
 
-        private static void InvalidateConnected<T>(Slot<T> bufferInput)
+        private static void InvalidateConnected<T>(InputSlot<T> bufferInput)
         {
-            if (bufferInput.TryGetAsMultiInputTyped(out var multiInput))
+            if (bufferInput.TryGetAsMultiInput(out var multiInput))
             {
-                foreach (var connection in multiInput.CollectedInputs)
+                foreach (var connection in multiInput.OutputsPluggedInToMe)
                 {
                     InvalidateParentInputs(connection);
                 }
@@ -328,8 +328,10 @@ namespace T3.Core.Operator
                 InvalidateParentInputs(connection);
             }
 
+            return;
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            void InvalidateParentInputs(ISlot connection)
+            void InvalidateParentInputs(SlotBase connection)
             {
                 if(connection.ValueType == typeof(string))
                     return;

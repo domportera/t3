@@ -275,7 +275,7 @@ namespace T3.Editor.Gui.Graph
 
                 if (input.TryGetAsMultiInput(out var multiInput))
                 {
-                    foreach (var entry in multiInput.InputConnections)
+                    foreach (var entry in multiInput.OutputsPluggedInToMe)
                     {
                         RecursivelyCollectExportData(entry, exportInfo);
                     }
