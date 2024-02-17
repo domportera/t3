@@ -8,11 +8,11 @@ namespace T3.Core.Operator.Slots
     //todo: make this an InputSlot<T[]>?
     public sealed class MultiInputSlot<T>() : MultInputSlot(typeof(T))
     {
-        public override bool IsConnected => _inputConnectionsTyped.Count > 0;
-        public override IReadOnlyList<OutputSlot> OutputsPluggedInToMe => _inputConnectionsTyped;
-        public IReadOnlyList<Slot<T>> InputConnectionsTyped => _inputConnectionsTyped;
+        public override bool IsConnected => _outputSlotsConnectedToMe.Count > 0;
+        public override IReadOnlyList<OutputSlot> OutputsPluggedInToMe => _outputSlotsConnectedToMe;
+        public IReadOnlyList<Slot<T>> OutputSlotsConnectedToMe => _outputSlotsConnectedToMe;
 
-        public override OutputSlot FirstConnection => (_inputConnectionsTyped.Count > 0 ? _inputConnectionsTyped[0] : null)!;
+        public override OutputSlot FirstConnection => (_outputSlotsConnectedToMe.Count > 0 ? _outputSlotsConnectedToMe[0] : null)!;
         public override SymbolChild.Input Input { get; set; }
 
         protected override OutputSlot CreateLinkSlot()
@@ -23,17 +23,17 @@ namespace T3.Core.Operator.Slots
         public override void AddConnection(OutputSlot sourceSlot)
         {
             var sourceSlotTyped = (Slot<T>)sourceSlot;
-            _inputConnectionsTyped.Add(sourceSlotTyped);
+            _outputSlotsConnectedToMe.Add(sourceSlotTyped);
         }
 
         public override void AddConnection(OutputSlot sourceSlot, int index)
         {
             if (sourceSlot is Slot<T> sourceSlotTyped)
             {
-                if (index < _inputConnectionsTyped.Count)
-                    _inputConnectionsTyped.Insert(index, sourceSlotTyped);
+                if (index < _outputSlotsConnectedToMe.Count)
+                    _outputSlotsConnectedToMe.Insert(index, sourceSlotTyped);
                 else
-                    _inputConnectionsTyped.Add(sourceSlotTyped);
+                    _outputSlotsConnectedToMe.Add(sourceSlotTyped);
             }
             else if (sourceSlot is MultiOutputSlot<T> multiOutputSlot)
             {
@@ -43,20 +43,20 @@ namespace T3.Core.Operator.Slots
 
         public override void RemoveConnection()
         {
-            _inputConnectionsTyped.RemoveAt(_inputConnectionsTyped.Count - 1);
+            _outputSlotsConnectedToMe.RemoveAt(_outputSlotsConnectedToMe.Count - 1);
         }
 
         public override void RemoveConnection(int index)
         {
-            if (index >= _inputConnectionsTyped.Count)
+            if (index >= _outputSlotsConnectedToMe.Count)
                 return;
 
-            _inputConnectionsTyped.RemoveAt(index);
+            _outputSlotsConnectedToMe.RemoveAt(index);
         }
 
         public void GetValues(ref T[] resources, EvaluationContext context, bool clearDirty = true)
         {
-            var connectedInputs = _inputConnectionsTyped;
+            var connectedInputs = _outputSlotsConnectedToMe;
             if (connectedInputs.Count != resources.Length)
             {
                 resources = new T[connectedInputs.Count];
@@ -91,17 +91,17 @@ namespace T3.Core.Operator.Slots
             {
                 foreach (var index in LimitMultiInputInvalidationToIndices)
                 {
-                    if (_inputConnectionsTyped.Count <= index)
+                    if (_outputSlotsConnectedToMe.Count <= index)
                         continue;
 
-                    var outputSlot = _inputConnectionsTyped[index];
+                    var outputSlot = _outputSlotsConnectedToMe[index];
                     totalTarget += outputSlot.Invalidate();
                     outputDirty |= outputSlot.DirtyFlag.IsDirty;
                 }
             }
             else
             {
-                foreach (var outputSlot in _inputConnectionsTyped)
+                foreach (var outputSlot in _outputSlotsConnectedToMe)
                 {
                     totalTarget += outputSlot.Invalidate();
                     outputDirty |= outputSlot.DirtyFlag.IsDirty;
@@ -117,13 +117,13 @@ namespace T3.Core.Operator.Slots
             return dirtyFlag.Target;
         }
 
-        private readonly List<Slot<T>> _inputConnectionsTyped = new(10);
-        public override SlotBase FirstConnectedSlot => _inputConnectionsTyped.Count > 0 ? _inputConnectionsTyped[0] : null;
+        private readonly List<Slot<T>> _outputSlotsConnectedToMe = new(10);
+        public override SlotBase FirstConnectedSlot => _outputSlotsConnectedToMe.Count > 0 ? _outputSlotsConnectedToMe[0] : null;
 
         public IReadOnlyList<T> GetValues(EvaluationContext context, bool clearDirty = true)
         {
             _values.Clear();
-            foreach (var input in _inputConnectionsTyped)
+            foreach (var input in _outputSlotsConnectedToMe)
             {
                 _values.Add(input.GetValue(context));
             }

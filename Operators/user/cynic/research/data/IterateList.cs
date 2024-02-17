@@ -32,7 +32,7 @@ namespace user.cynic.research.data
 
             context.IteratedList = list;
 
-            foreach (var initCommand in SetupCommands.InputConnectionsTyped)
+            foreach (var initCommand in SetupCommands.OutputSlotsConnectedToMe)
             {
                 initCommand.Invalidate();
                 initCommand.GetValue(context);
@@ -43,7 +43,7 @@ namespace user.cynic.research.data
                 context.IteratedListIndex = index;
                 context.FloatVariables["iterator"] = index;
                 DirtyFlag.InvalidationRefFrame++;
-                foreach (var c in IterateCommands.InputConnectionsTyped)
+                foreach (var c in IterateCommands.OutputSlotsConnectedToMe)
                 {
                     c.Invalidate();
                     c.GetValue(context);

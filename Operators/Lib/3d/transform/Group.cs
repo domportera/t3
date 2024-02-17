@@ -54,7 +54,7 @@ namespace lib._3d.transform
             var previousWorldTobject = context.ObjectToWorld;
             context.ObjectToWorld = Matrix4x4.Multiply(objectToParentObject, context.ObjectToWorld);
             
-            var commands = Commands.InputConnectionsTyped;
+            var commands = Commands.OutputSlotsConnectedToMe;
             if (IsEnabled.GetValue(context))
             {
                 foreach (var t1 in commands)

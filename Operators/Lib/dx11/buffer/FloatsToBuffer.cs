@@ -28,8 +28,8 @@ namespace lib.dx11.buffer
         {
             try
             {
-                var matrixParams = Vec4Params.InputConnectionsTyped;
-                var floatParams = Params.InputConnectionsTyped;
+                var matrixParams = Vec4Params.OutputSlotsConnectedToMe;
+                var floatParams = Params.OutputSlotsConnectedToMe;
 
                 var floatParamCount = floatParams.Count;
                 var vec4ArrayLength = matrixParams.Count;

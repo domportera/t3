@@ -30,7 +30,7 @@ namespace lib.dx11.buffer
 
         private void Update(EvaluationContext context)
         {
-            var listsCollectedInputs = Lists.InputConnectionsTyped.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
+            var listsCollectedInputs = Lists.OutputSlotsConnectedToMe.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
             Lists.DirtyFlag.Clear();
 
             if (listsCollectedInputs.Count == 0)

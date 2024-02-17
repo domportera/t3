@@ -25,7 +25,7 @@ namespace lib._3d.rendering
         
         private void Update(EvaluationContext context)
         {
-            var materialsInputs = Materials.InputConnectionsTyped;
+            var materialsInputs = Materials.OutputSlotsConnectedToMe;
 
             var addedMaterialsCount = 0;
             var previousMaterialCount = context.Materials.Count;

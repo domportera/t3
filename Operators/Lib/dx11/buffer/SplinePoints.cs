@@ -43,7 +43,7 @@ namespace lib.dx11.buffer
             try
             {
                 //Log.Debug("Update spline", this);
-                var pointsCollectedInputs = Points.InputConnectionsTyped;
+                var pointsCollectedInputs = Points.OutputSlotsConnectedToMe;
 
                 var connectedLists = pointsCollectedInputs.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
                 Points.DirtyFlag.Clear();

@@ -19,7 +19,7 @@ namespace lib.math.@float
 
         private void Update(EvaluationContext context)
         {
-            var connections = InputValues.InputConnectionsTyped;
+            var connections = InputValues.OutputSlotsConnectedToMe;
             if (connections == null || connections.Count == 0)
                 return;
 

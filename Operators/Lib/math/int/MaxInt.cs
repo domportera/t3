@@ -22,7 +22,7 @@ namespace lib.math.@int
         {
             var max = Int32.MinValue;
             
-            foreach (var i in Ints.InputConnectionsTyped)
+            foreach (var i in Ints.OutputSlotsConnectedToMe)
             {
                 max = Math.Max(max, i.GetValue(context));
             }

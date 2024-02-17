@@ -22,7 +22,7 @@ namespace lib.math.vec3
         {
             Result.Value = Vector3.Zero;
 
-            var collectedTypedInputs = Vectors.InputConnectionsTyped;
+            var collectedTypedInputs = Vectors.OutputSlotsConnectedToMe;
             var count = collectedTypedInputs.Count;
             if (count == 0)
                 return;

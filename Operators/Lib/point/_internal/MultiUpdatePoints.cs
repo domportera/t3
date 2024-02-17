@@ -23,7 +23,7 @@ namespace lib.point._internal
 
         private void Update(EvaluationContext context)
         {
-            var connectedLists = PointBuffers.InputConnectionsTyped.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
+            var connectedLists = PointBuffers.OutputSlotsConnectedToMe.Select(c => c.GetValue(context)).Where(c => c != null).ToList();
             PointBuffers.DirtyFlag.Clear();
             
             if (connectedLists.Count == 0)

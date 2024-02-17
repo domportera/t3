@@ -21,7 +21,7 @@ namespace lib.img.use
 
         private void Update(EvaluationContext context)
         {
-            var connections = Input.InputConnectionsTyped;
+            var connections = Input.OutputSlotsConnectedToMe;
             if (connections == null || connections.Count == 0)
                 return;
 

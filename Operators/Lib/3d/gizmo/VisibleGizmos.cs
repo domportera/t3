@@ -25,7 +25,7 @@ namespace lib._3d.gizmo
             if (visibility == GizmoVisibility.Inherit)
                 visibility = context.ShowGizmos;
 
-            var commands = Commands.InputConnectionsTyped;
+            var commands = Commands.OutputSlotsConnectedToMe;
             if (!_updatedOnce)
             {
                 foreach (var t in commands)

@@ -32,7 +32,7 @@ namespace lib.dx11.draw
 
             if (RenderTargets.DirtyFlag.IsDirty)
             {
-                _connectedDescriptions = RenderTargets.InputConnectionsTyped;
+                _connectedDescriptions = RenderTargets.OutputSlotsConnectedToMe;
                 RenderTargets.DirtyFlag.Clear();
             }
 

@@ -38,7 +38,7 @@ namespace lib._3d.transform
             
             var spread = Spread.GetValue(context);
             
-            var commands = Commands.InputConnectionsTyped;
+            var commands = Commands.OutputSlotsConnectedToMe;
             var isEnabled = IsEnabled.GetValue(context);
             
             var s = Scale.GetValue(context) * UniformScale.GetValue(context);

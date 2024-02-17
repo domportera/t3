@@ -25,7 +25,7 @@ namespace lib.math.int2
             int maxWidth =0 ;
             int maxHeight = 0;
             //Result.Value = 0;
-            foreach (var input in Sizes.InputConnectionsTyped)
+            foreach (var input in Sizes.OutputSlotsConnectedToMe)
             {
                 var s = input.GetValue(context);
                 maxWidth = Math.Max(maxWidth, s.Width);

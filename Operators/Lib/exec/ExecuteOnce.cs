@@ -28,7 +28,7 @@ namespace lib.exec
             {
                 //Log.Info("ExecuteOnce triggered", this);
                 Trigger.DirtyFlag.Clear();
-                var commands = Command.InputConnectionsTyped;
+                var commands = Command.OutputSlotsConnectedToMe;
 
                 // do preparation if needed
                 for (int i = 0; i < commands.Count; i++)

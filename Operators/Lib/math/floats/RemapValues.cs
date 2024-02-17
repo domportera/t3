@@ -26,7 +26,7 @@ namespace lib.math.floats
             var bestValue = 0f;
             var bestMatchingIndex = -1;
 
-            var list = InputAndOutputPairs.InputConnectionsTyped;
+            var list = InputAndOutputPairs.OutputSlotsConnectedToMe;
             for (var index = 0; index < list.Count; index++)
             {
                 var input = list[index];

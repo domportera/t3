@@ -19,7 +19,7 @@ namespace lib.exec
 
         private void Update(EvaluationContext context)
         {
-            var commands = Command.InputConnectionsTyped;
+            var commands = Command.OutputSlotsConnectedToMe;
             if (IsEnabled.GetValue(context))
             {
                 // do preparation if needed

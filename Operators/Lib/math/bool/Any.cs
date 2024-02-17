@@ -20,7 +20,7 @@ namespace lib.math.@bool
         {
             var result = false;
             
-            foreach (var input in Input.InputConnectionsTyped)
+            foreach (var input in Input.OutputSlotsConnectedToMe)
             {
                 result |= input.GetValue(context);
             }
