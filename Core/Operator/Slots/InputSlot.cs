@@ -43,6 +43,7 @@ namespace T3.Core.Operator.Slots
 
                 _linkSlot = CreateLinkSlot();
                 _linkSlot.Id = Id;
+                _linkSlot.Parent = Parent;
                 return _linkSlot;
             }
         }
@@ -52,6 +53,7 @@ namespace T3.Core.Operator.Slots
         protected abstract OutputSlot CreateLinkSlot();
         public abstract void AddConnection(OutputSlot sourceSlot);
         public abstract void RemoveConnection();
+        public abstract bool IsConnected { get; }
     }
 
     public sealed class InputSlot<T> : InputSlot
@@ -76,8 +78,6 @@ namespace T3.Core.Operator.Slots
             dirtyFlag.SetVisited();
             return dirtyFlag.Target;
         }
-
-        public override bool IsConnected { get; }
 
         public InputSlot(T value = default!) : base(typeof(T), false)
         {
@@ -107,7 +107,7 @@ namespace T3.Core.Operator.Slots
             }
         }
 
-        protected  override OutputSlot CreateLinkSlot()
+        protected override OutputSlot CreateLinkSlot()
         {
             _linkSlot = new Slot<T>(TypedDefaultValue.Value);
             _linkSlot.TrySetBypassToInput(this);
@@ -138,9 +138,9 @@ namespace T3.Core.Operator.Slots
         public override void AddConnection(OutputSlot sourceSlot)
         {
             // todo - generic version of this function?
-            if (sourceSlot is not Slot<T> correctOutputSlot)
+            if (sourceSlot is not Slot<T> correctSourceSlot)
             {
-                Log.Warning("Type mismatch during connection");
+                Log.Warning($"Type mismatch during connection: [{sourceSlot.Parent}].{sourceSlot.GetType()} --> [{Parent}].{GetType()}");
                 return;
             }
             
@@ -148,11 +148,11 @@ namespace T3.Core.Operator.Slots
             {
                 _actionBeforeAddingConnecting = UpdateAction;
                 UpdateAction = ConnectedUpdate;
-                DirtyFlag.Target = correctOutputSlot.DirtyFlag.Target;
+                DirtyFlag.Target = sourceSlot.DirtyFlag.Target;
                 DirtyFlag.Reference = DirtyFlag.Target - 1;
             }
-
-            _connectedOutput = correctOutputSlot;
+            
+            _connectedOutput = correctSourceSlot;
         }
 
         public override void RemoveConnection()
@@ -180,7 +180,7 @@ namespace T3.Core.Operator.Slots
             }
         }
 
-        private void ConnectedUpdate(EvaluationContext context)
+        public void ConnectedUpdate(EvaluationContext context)
         {
             Value = _connectedOutput.GetValue(context);
         }
@@ -196,8 +196,8 @@ namespace T3.Core.Operator.Slots
         public InputValue<T> TypedDefaultValue;
 
         private Slot<T>? _connectedOutput;
-        public override SlotBase FirstConnectedSlot => _connectedOutput!;
         public override OutputSlot FirstConnection => _connectedOutput!;
         private Slot<T> _linkSlot;
+        public override bool IsConnected => _connectedOutput != null;
     }
 }

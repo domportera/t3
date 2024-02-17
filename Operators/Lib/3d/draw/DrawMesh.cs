@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using System;
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis.FlowAnalysis;
 using SharpDX.Direct3D11;
 using T3.Core.DataTypes;
 using T3.Core.Logging;
@@ -52,15 +53,9 @@ namespace lib._3d.draw
             // Inner update
             //Output.ConnectedUpdate(context);
 
-            if (Output.ConnectedSlot is InputSlot<Command> commandSlot)
-            {
-                Output.Value = commandSlot.GetValue(context);
-                context.PbrMaterial = previousMaterial;
-            }
-            else
-            {
-                Log.Error("Output slot is not connected to a valid command input slot. This is most likely a bug. Please report it!");
-            }
+            var linkSlot = (InputSlot<Command>)Output.LinkSlot;
+            linkSlot.Update(context);
+            context.PbrMaterial = previousMaterial;
         }
 
         #region custom material dropdown

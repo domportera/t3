@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Log = T3.Core.Logging.Log;
 
 // ReSharper disable ConvertToAutoProperty
 
@@ -37,7 +38,17 @@ namespace T3.Core.Operator.Slots
             }
             else if (sourceSlot is MultiOutputSlot<T> multiOutputSlot)
             {
-                throw new Exception("Plugging a MultiOutputSlot into a MultiInputSlot is not supported");
+                var linkSlot = (MultiInputSlot<T>)multiOutputSlot.LinkSlot;
+                var slotsToAdd = linkSlot.OutputSlotsConnectedToMe; // todo - replace with field for performance
+                if (index < _outputSlotsConnectedToMe.Count)
+                    _outputSlotsConnectedToMe.InsertRange(index, slotsToAdd);
+                else
+                    _outputSlotsConnectedToMe.AddRange(slotsToAdd);
+
+                return;
+                var log = $"Adding connection from {multiOutputSlot.LinkSlot.Parent.Symbol.Name} to {this} in {Parent.Symbol.Name}."
+                          + " Plugging a MultiOutputSlot into a MultiInputSlot is not yet supported";
+                Log.Warning(log);
             }
         }
 
@@ -118,7 +129,7 @@ namespace T3.Core.Operator.Slots
         }
 
         private readonly List<Slot<T>> _outputSlotsConnectedToMe = new(10);
-        public override SlotBase FirstConnectedSlot => _outputSlotsConnectedToMe.Count > 0 ? _outputSlotsConnectedToMe[0] : null;
+        public SlotBase FirstConnectedSlot => _outputSlotsConnectedToMe.Count > 0 ? _outputSlotsConnectedToMe[0] : null;
 
         public IReadOnlyList<T> GetValues(EvaluationContext context, bool clearDirty = true)
         {

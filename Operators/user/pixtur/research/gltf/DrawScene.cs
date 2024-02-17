@@ -57,15 +57,9 @@ namespace user.pixtur.research.gltf
             
             // Inner update
             //Output.ConnectedUpdate(context);
-            if (Output.ConnectedSlot is InputSlot<Command> input)
-            {
-                Output.Value = input.GetValue(context);
-                context.PbrMaterial = previousMaterial;
-            }
-            else
-            {
-                Log.Error("Output slot not connected is not connected or is not of type InputSlot<Command>", this);
-            }
+            var linkSlot = (InputSlot<Command>)Output.LinkSlot;
+            Output.Value = linkSlot.GetValue(context);
+            context.PbrMaterial = previousMaterial;
         }        
         
         

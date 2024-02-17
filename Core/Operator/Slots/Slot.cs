@@ -46,7 +46,6 @@ namespace T3.Core.Operator.Slots
             return dirtyFlag.IsAlreadyInvalidated || dirtyFlag.HasBeenVisited;
         }
 
-        public abstract bool IsConnected { get; }
         private readonly bool _valueIsCommand;
 
         public void RestoreUpdateAction()
@@ -62,30 +61,6 @@ namespace T3.Core.Operator.Slots
             KeepOriginalUpdateAction = null;
             DirtyFlag.Trigger = KeepDirtyFlagTrigger;
             DirtyFlag.Invalidate();
-        }
-
-        protected virtual void SetDisabled(bool shouldBeDisabled)
-        {
-            if (shouldBeDisabled == _isDisabled)
-                return;
-
-            if (shouldBeDisabled)
-            {
-                if (KeepOriginalUpdateAction != null)
-                {
-                    Log.Warning("Is already bypassed or disabled");
-                    return;
-                }
-
-                KeepOriginalUpdateAction = UpdateAction;
-                KeepDirtyFlagTrigger = DirtyFlag.Trigger;
-                UpdateAction = EmptyAction;
-                DirtyFlag.Invalidate();
-            }
-            else
-            {
-                RestoreUpdateAction();
-            }
         }
 
         public void OverrideWithAnimationAction(Action<EvaluationContext> newAction)
@@ -108,24 +83,5 @@ namespace T3.Core.Operator.Slots
 
         protected Action<EvaluationContext> KeepOriginalUpdateAction;
         protected DirtyFlagTrigger KeepDirtyFlagTrigger;
-
-        public bool IsDisabled
-        {
-            get => _isDisabled;
-            set
-            {
-                if (_isDisabled == value)
-                    return;
-                
-                SetDisabled(value);
-                _isDisabled = value;
-            }
-        }
-
-
-        private bool _isDisabled;
-        public abstract SlotBase FirstConnectedSlot { get; }
     }
-
-    // Todo: this is an output slot - should be renamed in the future
 }

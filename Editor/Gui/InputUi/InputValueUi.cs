@@ -165,7 +165,7 @@ namespace T3.Editor.Gui.InputUi
             #region draw parameter types --------------------------------------------------------
             InputEditStateFlags DrawConnectedParameter()
             {
-                if (typedInputSlot.IsMultiInput)
+                if (inputSlot.TryGetAsMultiInput(out var multiInput))
                 {
                     // Just show actual value
                     ImGui.Button(name + "##paramName", new Vector2(-1, 0));

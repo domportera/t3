@@ -100,7 +100,7 @@ namespace T3.Core.Operator
         
         //public PbrMaterialTextures PbrMaterialTextures { get; set; } = new();
         public PbrMaterial PbrMaterial { get; set; }
-        public List<PbrMaterial> Materials { get; set; } = new(8);
+        public List<PbrMaterial> Materials { get; } = new(8);
         
         /// <summary>
         /// A structure that is used by SetTexture  

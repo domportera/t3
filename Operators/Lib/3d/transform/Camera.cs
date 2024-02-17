@@ -29,7 +29,7 @@ namespace lib._3d.transform
 
         private void UpdateOutputWithSubtree(EvaluationContext context)
         {
-            if(!Reference.IsConnected || Reference.DirtyFlag.IsDirty) 
+            //if(!Reference.IsConnected || Reference.DirtyFlag.IsDirty) 
                 UpdateCameraDefinition(context);
             
             Reference.DirtyFlag.Clear();

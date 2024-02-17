@@ -10,6 +10,7 @@ namespace T3.Core.Operator.Interfaces;
 /// This interface can then be activated by adding a string input with usage "custom input"
 /// in the parameter settings.
 /// </summary>
+///  todo - move to Editor?
 public interface ICustomDropdownHolder
 {
     string GetValueForInput(Guid inputId);

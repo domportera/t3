@@ -211,14 +211,14 @@ internal static class Structure
 
         if (slot is InputSlot inputSlot)
         {
-            if (!slot.IsConnected)
+            if (!inputSlot.IsConnected)
                 return;
 
             CollectSlotDependencies(inputSlot.FirstConnection, all);
         }
-        else if (slot is OutputSlot outputSlot && slot.IsConnected)
+        else if (slot is OutputSlot outputSlot && outputSlot.LinkSlot.IsConnected)
         {
-            CollectSlotDependencies(outputSlot.ConnectedSlot, all);
+            CollectSlotDependencies(outputSlot.LinkSlot, all);
         }
         else
         {

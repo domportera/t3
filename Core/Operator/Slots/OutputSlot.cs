@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Log = T3.Core.Logging.Log;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 
@@ -7,20 +7,6 @@ namespace T3.Core.Operator.Slots;
 
 public abstract class OutputSlot(Type type) : SlotBase(type)
 {
-    public sealed override bool IsConnected => _isConnected;
-
-    public void AddConnection(InputSlot input)
-    {
-        _isConnected = true;
-        _connectedInput = input;
-    }
-
-    public void RemoveConnection()
-    {
-        _isConnected = false;
-        _connectedInput = null;
-    }
-
     public sealed override int Invalidate()
     {
         if (AlreadyInvalidated(out var dirtyFlag))
@@ -37,12 +23,10 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
         {
             dirtyFlag.Invalidate();
         }
-        
+
         dirtyFlag.SetVisited();
         return dirtyFlag.Target;
     }
-    
-    public InputSlot ConnectedSlot => _connectedInput;
 
     public InputSlot LinkSlot
     {
@@ -51,56 +35,74 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
             if (_linkSlot != null)
                 return _linkSlot;
 
-            _linkSlot = GetLinkSlot();
+            _linkSlot = CreateAndSetBypassToLinkSlot();
             return _linkSlot;
         }
     }
 
-    protected abstract InputSlot GetLinkSlot();
+    protected abstract InputSlot CreateAndSetBypassToLinkSlot();
 
     private InputSlot _linkSlot;
-    private InputSlot _connectedInput;
-    public override SlotBase FirstConnectedSlot => _connectedInput;
-    private bool _isConnected;
-}
 
-internal abstract class MultiOutputSlot(Type type) : OutputSlot(type)
-{
-    
-}
-
-internal class MultiOutputSlot<T> : MultiOutputSlot
-{
-    public IReadOnlyList<T> Values => _values;
-    private T[] _values;
-    private MultiInputSlot<T> _targetInputForBypass;
-
-    public MultiOutputSlot(MultiInputSlot<T> targetInputForBypass) : base(typeof(T))
+    protected virtual void SetDisabled(bool shouldBeDisabled)
     {
-        _targetInputForBypass = targetInputForBypass;
-        SetBypassToInput(targetInputForBypass);
+        if (shouldBeDisabled == _isDisabled)
+            return;
+
+        if (shouldBeDisabled)
+        {
+            if (KeepOriginalUpdateAction != null)
+            {
+                Log.Warning("Is already bypassed or disabled");
+                return;
+            }
+
+            KeepOriginalUpdateAction = UpdateAction;
+            KeepDirtyFlagTrigger = DirtyFlag.Trigger;
+            UpdateAction = EmptyAction;
+            DirtyFlag.Invalidate();
+        }
+        else
+        {
+            RestoreUpdateAction();
+        }
     }
 
-    private void SetBypassToInput(MultiInputSlot<T> slot)
+    public bool IsDisabled
     {
+        get => _isDisabled;
+        set
+        {
+            if (_isDisabled == value)
+                return;
+
+            SetDisabled(value);
+            _isDisabled = value;
+        }
+    }
+
+    private bool _isDisabled;
+}
+
+internal sealed class MultiOutputSlot<T> : Slot<T[]>
+{
+    private readonly MultiInputSlot<T> _targetInputForBypass;
+
+    public MultiOutputSlot(MultiInputSlot<T> targetInputForBypass) : base(Array.Empty<T>())
+    {
+        Parent = targetInputForBypass.Parent;
+        _targetInputForBypass = targetInputForBypass;
+
         KeepOriginalUpdateAction = UpdateAction;
         KeepDirtyFlagTrigger = DirtyFlag.Trigger;
-        UpdateAction = ByPassUpdate;
-        DirtyFlag.Invalidate();
-        _targetInputForBypass = slot;
+        UpdateAction = context => _targetInputForBypass.GetValues(ref Value, context);
     }
 
-    private void ByPassUpdate(EvaluationContext context)
-    {
-        _targetInputForBypass.GetValues(ref _values, context);
-    }
-
-    protected override InputSlot GetLinkSlot()
+    protected override InputSlot CreateAndSetBypassToLinkSlot()
     {
         return _targetInputForBypass;
     }
 }
-
 
 public class Slot<T>(T defaultValue = default) : OutputSlot(typeof(T))
 {
@@ -134,10 +136,16 @@ public class Slot<T>(T defaultValue = default) : OutputSlot(typeof(T))
     }
 
     private InputSlot<T> _targetInputForBypass;
-    protected override InputSlot GetLinkSlot()
+
+    protected override InputSlot CreateAndSetBypassToLinkSlot()
     {
         var input = new InputSlot<T>();
-        input.AddConnection(this);
+        var set = TrySetBypassToInput(input);
+        if (!set)
+        {
+            Log.Error($"{Parent.Symbol.Name}.{GetType()} Failed to set bypass to input");
+        }
+
         return input;
     }
 }
