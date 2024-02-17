@@ -64,12 +64,12 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
     private bool _isConnected;
 }
 
-public abstract class MultiOutputSlot(Type type) : OutputSlot(type)
+internal abstract class MultiOutputSlot(Type type) : OutputSlot(type)
 {
     
 }
 
-public class MultiOutputSlot<T> : MultiOutputSlot
+internal class MultiOutputSlot<T> : MultiOutputSlot
 {
     public IReadOnlyList<T> Values => _values;
     private T[] _values;

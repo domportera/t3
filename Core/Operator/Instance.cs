@@ -87,13 +87,12 @@ namespace T3.Core.Operator
             if (!gotSource || !gotTarget)
                 return false;
 
-            if (!targetSlot.IsMultiInput)
+            if (!targetSlot.TryGetAsMultiInput(out var multiInput))
             {
                 targetSlot.AddConnection(sourceSlot);
             }
             else
             {
-                _ = targetSlot.TryGetAsMultiInput(out var multiInput);
                 multiInput.AddConnection(sourceSlot, multiInputIndex);
             }
 
