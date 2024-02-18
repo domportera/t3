@@ -46,17 +46,23 @@ public class ShaderResource<T> : ShaderResource where T : class, IDisposable
 
     public void UpdateDebugName(string newDebugName) => UpdateName(newDebugName);
 
-    public bool TryUpdateFromFile(string path, string entryPoint, IReadOnlyList<string> resourceDirectories, out string errorMessage)
+    public bool TryUpdateFromFile(string path, string entryPoint, Instance instance, out string errorMessage)
     {
-        var success = ShaderCompiler.Instance.TryCompileShaderFromFile(path, entryPoint, Name, resourceDirectories, ref _shader, ref _blob, out errorMessage);
+        var resolvedPath = ResourceManager.TryResolvePath(path, instance, out var absolutePath);
+        if (!resolvedPath)
+        {
+            errorMessage = $"Shader resource path not found: '{path}'";
+            return false;
+        }
+        var success = ShaderCompiler.Instance.TryCompileShaderFromFile(absolutePath, entryPoint, Name, instance.ResourceFolders, ref _shader, ref _blob, out errorMessage);
         if (success)
             _entryPoint = entryPoint;
         return success;
     }
 
-    public bool TryUpdateFromSource(string source, string entryPoint, IReadOnlyList<string> directories, out string errorMessage)
+    public bool TryUpdateFromSource(string source, string entryPoint, Instance instance, out string errorMessage)
     {
-        var success = ShaderCompiler.Instance.TryCompileShaderFromSource(source, entryPoint, Name, ref _shader, ref _blob, out errorMessage, directories);
+        var success = ShaderCompiler.Instance.TryCompileShaderFromSource(source, entryPoint, Name, ref _shader, ref _blob, out errorMessage, instance.ResourceFolders);
         if (success)
             _entryPoint = entryPoint;
         return success;

@@ -68,8 +68,8 @@ public interface IShaderOperator<T> where T : class, IDisposable
         else
         {
             updated = isSourceCode
-                          ? shaderResource.TryUpdateFromSource(source, entryPoint, instance.ResourceFolders, out message)
-                          : shaderResource.TryUpdateFromFile(source, entryPoint, instance.ResourceFolders, out message);
+                          ? shaderResource.TryUpdateFromSource(source, entryPoint, instance, out message)
+                          : shaderResource.TryUpdateFromFile(source, entryPoint, instance, out message);
         }
 
         if (updated && shaderResource != null)
