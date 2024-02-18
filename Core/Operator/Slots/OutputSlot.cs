@@ -22,6 +22,8 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
         if (outputDirty || (dirtyFlag.Trigger & DirtyFlagTrigger.Animated) == DirtyFlagTrigger.Animated)
         {
             dirtyFlag.Invalidate();
+            if(_hasLinkSlot)
+                _linkSlot.Invalidate();
         }
 
         dirtyFlag.SetVisited();
@@ -34,14 +36,16 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
         {
             if (_linkSlot != null)
                 return _linkSlot;
-
+            
             _linkSlot = CreateAndSetBypassToLinkSlot();
+            _hasLinkSlot = true;
             return _linkSlot;
         }
     }
 
     protected abstract InputSlot CreateAndSetBypassToLinkSlot();
 
+    private bool _hasLinkSlot;
     private InputSlot _linkSlot;
 
     protected virtual void SetDisabled(bool shouldBeDisabled)

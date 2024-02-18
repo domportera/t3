@@ -49,7 +49,7 @@ namespace T3.Core.Operator.Slots
         }
 
         private OutputSlot? _linkSlot;
-        
+
         protected abstract OutputSlot CreateLinkSlot();
         public abstract void AddConnection(OutputSlot sourceSlot);
         public abstract void RemoveConnection();
@@ -72,7 +72,11 @@ namespace T3.Core.Operator.Slots
             else
             {
                 if (dirtyFlag.Trigger != DirtyFlagTrigger.None)
+                {
                     dirtyFlag.Invalidate();
+                    if(_hasLinkSlot)
+                        _linkSlot.Invalidate();
+                }
             }
 
             dirtyFlag.SetVisited();
@@ -110,7 +114,13 @@ namespace T3.Core.Operator.Slots
         protected override OutputSlot CreateLinkSlot()
         {
             _linkSlot = new Slot<T>(TypedDefaultValue.Value);
-            _linkSlot.TrySetBypassToInput(this);
+            var bypassed = _linkSlot.TrySetBypassToInput(this);
+            if (!bypassed)
+            {
+                Log.Error($"Failed to set bypass to link slot");
+            }
+            
+            _hasLinkSlot = true;
             return _linkSlot;
         }
 
@@ -198,6 +208,7 @@ namespace T3.Core.Operator.Slots
         private Slot<T>? _connectedOutput;
         public override OutputSlot FirstConnection => _connectedOutput!;
         private Slot<T> _linkSlot;
+        private bool _hasLinkSlot;
         public override bool IsConnected => _connectedOutput != null;
     }
 }

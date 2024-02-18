@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Log = T3.Core.Logging.Log;
 
 // ReSharper disable ConvertToAutoProperty
@@ -18,7 +19,10 @@ namespace T3.Core.Operator.Slots
 
         protected override OutputSlot CreateLinkSlot()
         {
-            return new MultiOutputSlot<T>(this);
+            _linkSlot = new MultiOutputSlot<T>(this);
+            //var bypassed = _linkSlot.TrySetBypassToInput(this);
+            _hasLinkSlot = true;
+            return _linkSlot;
         }
 
         public override void AddConnection(OutputSlot sourceSlot)
@@ -90,7 +94,9 @@ namespace T3.Core.Operator.Slots
             if (!IsConnected)
             {
                 if (dirtyFlag.Trigger != DirtyFlagTrigger.None)
-                    dirtyFlag.Invalidate();
+                {
+                    InvalidateSelf();
+                }
 
                 return dirtyFlag.Target;
             }
@@ -106,26 +112,40 @@ namespace T3.Core.Operator.Slots
                         continue;
 
                     var outputSlot = _outputSlotsConnectedToMe[index];
-                    totalTarget += outputSlot.Invalidate();
-                    outputDirty |= outputSlot.DirtyFlag.IsDirty;
+                    totalTarget = InvalidateConnectedOutput(outputSlot);
                 }
             }
             else
             {
                 foreach (var outputSlot in _outputSlotsConnectedToMe)
                 {
-                    totalTarget += outputSlot.Invalidate();
-                    outputDirty |= outputSlot.DirtyFlag.IsDirty;
+                    totalTarget = InvalidateConnectedOutput(outputSlot);
                 }
             }
 
             if (outputDirty || (dirtyFlag.Trigger & DirtyFlagTrigger.Animated) == DirtyFlagTrigger.Animated)
             {
-                dirtyFlag.Invalidate();
+                InvalidateSelf();
             }
 
             dirtyFlag.SetVisited();
             return dirtyFlag.Target;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            void InvalidateSelf()
+            {
+                dirtyFlag.Invalidate();
+                if(_hasLinkSlot)
+                    _linkSlot.Invalidate();
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            int InvalidateConnectedOutput(Slot<T> outputSlot)
+            {
+                totalTarget += outputSlot.Invalidate();
+                outputDirty |= outputSlot.DirtyFlag.IsDirty;
+                return totalTarget;
+            }
         }
 
         private readonly List<Slot<T>> _outputSlotsConnectedToMe = new(10);
@@ -146,5 +166,7 @@ namespace T3.Core.Operator.Slots
         }
 
         private readonly List<T> _values = new();
+        private bool _hasLinkSlot;
+        private OutputSlot _linkSlot;
     }
 }
