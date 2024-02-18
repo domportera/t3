@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Log = T3.Core.Logging.Log;
 
@@ -84,6 +85,13 @@ namespace T3.Core.Operator.Slots
 
             if (clearDirty)
                 DirtyFlag.Clear();
+        }
+
+        public override void Update(EvaluationContext context)
+        {
+            Debug.Assert(UpdateMode == NormalUpdate);
+            DirtyFlag.Clear();
+            DirtyFlag.SetUpdated();
         }
 
         public override int Invalidate()

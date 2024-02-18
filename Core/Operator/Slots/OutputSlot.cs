@@ -1,4 +1,5 @@
 using System;
+using T3.Core.Stats;
 using Log = T3.Core.Logging.Log;
 
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
@@ -13,17 +14,21 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
             return dirtyFlag.Target;
 
         bool outputDirty = dirtyFlag.IsDirty;
-        foreach (var input in Parent.Inputs)
+        foreach (var input in Parent.Inputs) // todo: is this necessary? should we only invalidate actual connected inputs of this slot?
         {
             input.Invalidate();
             outputDirty |= input.DirtyFlag.IsDirty;
         }
 
+        if (_hasLinkSlot)
+        {
+            _linkSlot.Invalidate();
+            outputDirty |= _linkSlot.DirtyFlag.IsDirty;
+        }
+
         if (outputDirty || (dirtyFlag.Trigger & DirtyFlagTrigger.Animated) == DirtyFlagTrigger.Animated)
         {
             dirtyFlag.Invalidate();
-            if(_hasLinkSlot)
-                _linkSlot.Invalidate();
         }
 
         dirtyFlag.SetVisited();
@@ -34,60 +39,51 @@ public abstract class OutputSlot(Type type) : SlotBase(type)
     {
         get
         {
-            if (_linkSlot != null)
+            lock (_linkSlotLock)
+            {
+                if (_linkSlot != null)
+                    return _linkSlot;
+
+                _linkSlot = InitializeLinkSlot();
+
+                _linkSlot.Parent = Parent;
+                _linkSlot.Id = Id;
+                _linkSlot.Invalidate();
+                _hasLinkSlot = true;
                 return _linkSlot;
-            
-            _linkSlot = CreateAndSetBypassToLinkSlot();
-            _hasLinkSlot = true;
-            return _linkSlot;
+            }
         }
     }
 
-    protected abstract InputSlot CreateAndSetBypassToLinkSlot();
+    protected abstract InputSlot InitializeLinkSlot();
 
     private bool _hasLinkSlot;
     private InputSlot _linkSlot;
 
-    protected virtual void SetDisabled(bool shouldBeDisabled)
-    {
-        if (shouldBeDisabled == _isDisabled)
-            return;
-
-        if (shouldBeDisabled)
-        {
-            if (KeepOriginalUpdateAction != null)
-            {
-                Log.Warning("Is already bypassed or disabled");
-                return;
-            }
-
-            KeepOriginalUpdateAction = UpdateAction;
-            KeepDirtyFlagTrigger = DirtyFlag.Trigger;
-            UpdateAction = EmptyAction;
-            DirtyFlag.Invalidate();
-        }
-        else
-        {
-            RestoreUpdateAction();
-        }
-    }
-
     public bool IsDisabled
     {
-        get => _isDisabled;
         set
         {
             if (_isDisabled == value)
                 return;
 
-            SetDisabled(value);
             _isDisabled = value;
+            SetDisabled(value);
+            DirtyFlag.Invalidate();
         }
     }
 
     private bool _isDisabled;
+    protected abstract void SetDisabled(bool value);
+    public virtual Action<EvaluationContext> UpdateAction { get; set; }
+    private readonly object _linkSlotLock = new();
 }
 
+/// <summary>
+/// This is not a fully fledged slot type - it is only used as a link slot for MultiInputSlots
+/// Therefore, the implementation is *purely* as a bypassed slot and is thus very simple
+/// </summary>
+/// <typeparam name="T"></typeparam>
 internal sealed class MultiOutputSlot<T> : Slot<T[]>
 {
     private readonly MultiInputSlot<T> _targetInputForBypass;
@@ -96,13 +92,10 @@ internal sealed class MultiOutputSlot<T> : Slot<T[]>
     {
         Parent = targetInputForBypass.Parent;
         _targetInputForBypass = targetInputForBypass;
-
-        KeepOriginalUpdateAction = UpdateAction;
-        KeepDirtyFlagTrigger = DirtyFlag.Trigger;
         UpdateAction = context => _targetInputForBypass.GetValues(ref Value, context);
     }
 
-    protected override InputSlot CreateAndSetBypassToLinkSlot()
+    protected override InputSlot InitializeLinkSlot()
     {
         return _targetInputForBypass;
     }
@@ -120,36 +113,71 @@ public class Slot<T>(T defaultValue = default) : OutputSlot(typeof(T))
 
     public bool TrySetBypassToInput(InputSlot<T> targetSlot)
     {
-        if (KeepOriginalUpdateAction != null)
-        {
-            //Log.Warning("Already disabled or bypassed");
-            return false;
-        }
-
-        KeepOriginalUpdateAction = UpdateAction;
-        KeepDirtyFlagTrigger = DirtyFlag.Trigger;
-        UpdateAction = ByPassUpdate;
         DirtyFlag.Invalidate();
         _targetInputForBypass = targetSlot;
+        _updateMode = BypassUpdate;
         return true;
     }
 
-    private void ByPassUpdate(EvaluationContext context)
-    {
-        Value = _targetInputForBypass.GetValue(context);
-    }
+    protected sealed override void SetDisabled(bool value) => _isDisabled = value;
 
-    private InputSlot<T> _targetInputForBypass;
-
-    protected override InputSlot CreateAndSetBypassToLinkSlot()
+    public sealed override void Update(EvaluationContext context)
     {
-        var input = new InputSlot<T>();
-        var set = TrySetBypassToInput(input);
-        if (!set)
+        if (_isDisabled)
+            return;
+
+        if (!DirtyFlag.IsDirty && !ValueIsCommand)
+            return;
+
+        switch (_updateMode)
         {
-            Log.Error($"{Parent.Symbol.Name}.{GetType()} Failed to set bypass to input");
+            case NormalUpdate:
+                UpdateAction?.Invoke(context);
+                break;
+            case BypassUpdate:
+                Value = ByPassUpdate(context, _targetInputForBypass);
+                break;
+            case LinkUpdate:
+                Value = ByPassUpdate(context, _linkSlot);
+                //UpdateAction?.Invoke(context);
+                
+                break;
         }
 
-        return input;
+        DirtyFlag.Clear();
+        DirtyFlag.SetUpdated();
+        OpUpdateCounter.CountUp();
     }
+
+    public void SetUnBypassed()
+    {
+        _updateMode = NormalUpdate;
+        _targetInputForBypass = null;
+        DirtyFlag.Invalidate();
+    }
+
+    private T ByPassUpdate(EvaluationContext context, InputSlot<T> linkSlot) => linkSlot.GetValue(context);
+
+    private InputSlot<T> _targetInputForBypass;
+    private InputSlot<T> _linkSlot;
+
+    protected override InputSlot InitializeLinkSlot()
+    {
+        _linkSlot = new InputSlot<T>();
+        var inputDefinition = new Symbol.InputDefinition();
+        inputDefinition.IsMultiInput = false;
+        inputDefinition.Id = Id;
+        inputDefinition.DefaultValue = new InputValue<T>(_defaultValue);
+        _linkSlot.Input = new SymbolChild.Input(inputDefinition);
+        _updateMode = LinkUpdate;
+        
+        return _linkSlot;
+    }
+
+    private readonly T _defaultValue = defaultValue;
+    private bool _isDisabled;
+    private int _updateMode = NormalUpdate;
+    private const int NormalUpdate = 0;
+    private const int BypassUpdate = 1;
+    private const int LinkUpdate = 2;
 }

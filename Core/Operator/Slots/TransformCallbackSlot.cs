@@ -30,27 +30,5 @@ namespace T3.Core.Operator.Slots
                 base.UpdateAction = Update;
             }
         }
-        
-        
-        protected override void SetDisabled(bool shouldBeDisabled)
-        {   
-            if (shouldBeDisabled)
-            {
-                if (KeepOriginalUpdateAction != null)
-                {
-                    Log.Warning("Is already bypassed or disabled");
-                    return;
-                }
-                
-                KeepOriginalUpdateAction = _baseUpdateAction;
-                base.UpdateAction = EmptyAction;
-                DirtyFlag.Invalidate();
-            }
-            else
-            {
-                RestoreUpdateAction();
-            }
-        }
-
     }
 }

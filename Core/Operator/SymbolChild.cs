@@ -219,7 +219,7 @@ namespace T3.Core.Operator
                         }
                         else
                         {
-                            commandOutput.RestoreUpdateAction();
+                            commandOutput.SetUnBypassed();
                         }
                         InvalidateConnected(commandInput);
                         break;
@@ -231,7 +231,7 @@ namespace T3.Core.Operator
                         }
                         else
                         {
-                            bufferOutput.RestoreUpdateAction();
+                            bufferOutput.SetUnBypassed();
                         }
                         InvalidateConnected(bufferInput);
                         break;
@@ -242,7 +242,7 @@ namespace T3.Core.Operator
                         }
                         else
                         {
-                            bufferOutput.RestoreUpdateAction();
+                            bufferOutput.SetUnBypassed();
                         }
                         InvalidateConnected(bufferInput);
 
@@ -254,7 +254,7 @@ namespace T3.Core.Operator
                         }
                         else
                         {
-                            texture2dOutput.RestoreUpdateAction();
+                            texture2dOutput.SetUnBypassed();
                         }
                         InvalidateConnected(texture2dInput);
 
@@ -266,7 +266,7 @@ namespace T3.Core.Operator
                         }
                         else
                         {
-                            floatOutput.RestoreUpdateAction();
+                            floatOutput.SetUnBypassed();
                         }
                         InvalidateConnected(floatInput);
 
@@ -279,7 +279,7 @@ namespace T3.Core.Operator
                         }
                         else
                         {
-                            vec2Output.RestoreUpdateAction();
+                            vec2Output.SetUnBypassed();
                         }
                         InvalidateConnected(vec2Input);
 
@@ -291,7 +291,7 @@ namespace T3.Core.Operator
                         }
                         else
                         {
-                            vec3Output.RestoreUpdateAction();
+                            vec3Output.SetUnBypassed();
                         }
                         InvalidateConnected(vec3Input);
 
@@ -303,7 +303,7 @@ namespace T3.Core.Operator
                         }
                         else
                         {
-                            stringOutput.RestoreUpdateAction();
+                            stringOutput.SetUnBypassed();
                         }
                         InvalidateConnected(stringInput);
                         break;

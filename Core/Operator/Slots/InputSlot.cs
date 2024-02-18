@@ -1,6 +1,8 @@
 #nullable enable
 using System;
+using System.Runtime.CompilerServices;
 using T3.Core.Logging;
+using T3.Core.Stats;
 
 namespace T3.Core.Operator.Slots
 {
@@ -20,7 +22,7 @@ namespace T3.Core.Operator.Slots
         {
             MappedType = type;
             IsMultiInput = isMultiInput;
-            
+
             if (isMultiInput)
             {
                 ThisAsMultInputSlot = (MultInputSlot)this;
@@ -54,6 +56,34 @@ namespace T3.Core.Operator.Slots
         public abstract void AddConnection(OutputSlot sourceSlot);
         public abstract void RemoveConnection();
         public abstract bool IsConnected { get; }
+        protected int UpdateMode = NormalUpdate;
+        protected const int NormalUpdate = 0;
+        
+        // animation
+
+        public void RestoreUpdateAction()
+        {
+            if (UpdateMode == AnimationUpdate)
+            {
+                DirtyFlag.Trigger = _keepDirtyFlagTrigger;
+                AnimationUpdateAction = null;
+            }
+
+            UpdateMode = NormalUpdate;
+            DirtyFlag.Invalidate();
+        }
+
+        public void OverrideWithAnimationAction(Action<EvaluationContext> newAction)
+        {
+            AnimationUpdateAction = newAction;
+            UpdateMode = AnimationUpdate;
+            _keepDirtyFlagTrigger = DirtyFlag.Trigger;
+            DirtyFlag.Invalidate();
+        }
+
+        private DirtyFlagTrigger _keepDirtyFlagTrigger;
+        private protected Action<EvaluationContext>? AnimationUpdateAction;
+        private protected const int AnimationUpdate = 1;
     }
 
     public sealed class InputSlot<T> : InputSlot
@@ -65,18 +95,17 @@ namespace T3.Core.Operator.Slots
             if (AlreadyInvalidated(out var dirtyFlag))
                 return dirtyFlag.Target;
 
-            if (IsConnected)
+            if (_isConnected)
             {
-                dirtyFlag.Target = _connectedOutput.Invalidate();
+                dirtyFlag.Target = _connectedOutput!.Invalidate();
+                return dirtyFlag.Target;
             }
-            else
+
+            if (dirtyFlag.Trigger != DirtyFlagTrigger.None)
             {
-                if (dirtyFlag.Trigger != DirtyFlagTrigger.None)
-                {
-                    dirtyFlag.Invalidate();
-                    if(_hasLinkSlot)
-                        _linkSlot.Invalidate();
-                }
+                dirtyFlag.Invalidate();
+                dirtyFlag.SetVisited();
+                return _hasLinkSlot ? _linkSlot.Invalidate() : dirtyFlag.Target;
             }
 
             dirtyFlag.SetVisited();
@@ -85,8 +114,6 @@ namespace T3.Core.Operator.Slots
 
         public InputSlot(T value = default!) : base(typeof(T), false)
         {
-            UpdateAction = InputUpdate;
-            KeepOriginalUpdateAction = UpdateAction;
             var typedInputValue = new InputValue<T>(value);
             TypedInputValue = typedInputValue;
             TypedDefaultValue = new InputValue<T>(value);
@@ -114,12 +141,11 @@ namespace T3.Core.Operator.Slots
         protected override OutputSlot CreateLinkSlot()
         {
             _linkSlot = new Slot<T>(TypedDefaultValue.Value);
-            var bypassed = _linkSlot.TrySetBypassToInput(this);
-            if (!bypassed)
+            if (!_linkSlot.TrySetBypassToInput(this))
             {
                 Log.Error($"Failed to set bypass to link slot");
             }
-            
+
             _hasLinkSlot = true;
             return _linkSlot;
         }
@@ -128,6 +154,28 @@ namespace T3.Core.Operator.Slots
         {
             Update(context);
             return Value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override void Update(EvaluationContext context)
+        {
+            if (!DirtyFlag.IsDirty && !ValueIsCommand)
+                return;
+
+            switch (UpdateMode)
+            {
+                case NormalUpdate:
+                    InputUpdate(context);
+                    break;
+
+                case AnimationUpdate:
+                    AnimationUpdateAction?.Invoke(context);
+                    break;
+            }
+
+            DirtyFlag.Clear();
+            DirtyFlag.SetUpdated();
+            OpUpdateCounter.CountUp();
         }
 
         public T GetCurrentValue()
@@ -153,54 +201,36 @@ namespace T3.Core.Operator.Slots
                 Log.Warning($"Type mismatch during connection: [{sourceSlot.Parent}].{sourceSlot.GetType()} --> [{Parent}].{GetType()}");
                 return;
             }
-            
-            if (!IsConnected)
+
+            if (!_isConnected)
             {
-                _actionBeforeAddingConnecting = UpdateAction;
-                UpdateAction = ConnectedUpdate;
                 DirtyFlag.Target = sourceSlot.DirtyFlag.Target;
                 DirtyFlag.Reference = DirtyFlag.Target - 1;
             }
-            
+
             _connectedOutput = correctSourceSlot;
+            _isConnected = true;
         }
 
         public override void RemoveConnection()
         {
-            bool hasRemoved = false;
-            if (IsConnected)
-            {
-                _connectedOutput = null;
-                hasRemoved = true;
-            }
+            if (!_isConnected)
+                return;
 
-            if (!hasRemoved)
-            {
-                if (_actionBeforeAddingConnecting != null)
-                {
-                    UpdateAction = _actionBeforeAddingConnecting;
-                }
-                else
-                {
-                    // if no connection is set anymore restore the default update action
-                    RestoreUpdateAction();
-                }
-
-                DirtyFlag.Invalidate();
-            }
+            _isConnected = false;
+            _connectedOutput = null;
+            RestoreUpdateAction();
+            DirtyFlag.Invalidate();
         }
 
-        public void ConnectedUpdate(EvaluationContext context)
-        {
-            Value = _connectedOutput.GetValue(context);
-        }
-
+        // todo: this probably doesnt need to run as frequently as it does if it is not connected
         private void InputUpdate(EvaluationContext context)
         {
-            Value = Input.IsDefault ? TypedDefaultValue.Value : TypedInputValue.Value;
+            if (_isConnected)
+                Value = _connectedOutput!.GetValue(context);
+            else
+                Value = Input.IsDefault ? TypedDefaultValue.Value : TypedInputValue.Value;
         }
-
-        private Action<EvaluationContext>? _actionBeforeAddingConnecting;
 
         public InputValue<T> TypedInputValue;
         public InputValue<T> TypedDefaultValue;
@@ -209,6 +239,7 @@ namespace T3.Core.Operator.Slots
         public override OutputSlot FirstConnection => _connectedOutput!;
         private Slot<T> _linkSlot;
         private bool _hasLinkSlot;
-        public override bool IsConnected => _connectedOutput != null;
+        public override bool IsConnected => _isConnected;
+        private bool _isConnected;
     }
 }

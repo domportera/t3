@@ -76,20 +76,5 @@ namespace T3.Core.Operator.Slots
                 base.UpdateAction = UpdateWithTimeRangeCheck;
             }
         }
-
-        protected override void SetDisabled(bool isDisabled)
-        {
-            if (isDisabled)
-            {
-                KeepOriginalUpdateAction = _baseUpdateAction;
-                base.UpdateAction = EmptyAction;
-                DirtyFlag.Invalidate();
-            }
-            else
-            {
-                RestoreUpdateAction();
-                DirtyFlag.Invalidate();
-            }
-        }
     }
 }

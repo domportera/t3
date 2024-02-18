@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using T3.Core.DataTypes;
-using T3.Core.Logging;
-using T3.Core.Operator.Interfaces;
-using T3.Core.Stats;
 
 // ReSharper disable ConvertToAutoPropertyWhenPossible
 
@@ -21,21 +17,10 @@ namespace T3.Core.Operator.Slots
         {
             // UpdateAction = Update;
             ValueType = type;
-            _valueIsCommand = ValueType == typeof(Command);
+            ValueIsCommand = ValueType == typeof(Command);
         }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Update(EvaluationContext context)
-        {
-            if (DirtyFlag.IsDirty || _valueIsCommand)
-            {
-                OpUpdateCounter.CountUp();
-                UpdateAction?.Invoke(context);
-                DirtyFlag.Clear();
-                DirtyFlag.SetUpdated();
-            }
-        }
+        
+        public abstract void Update(EvaluationContext context);
 
         public abstract int Invalidate();
 
@@ -46,42 +31,8 @@ namespace T3.Core.Operator.Slots
             return dirtyFlag.IsAlreadyInvalidated || dirtyFlag.HasBeenVisited;
         }
 
-        private readonly bool _valueIsCommand;
+        protected readonly bool ValueIsCommand;
 
-        public void RestoreUpdateAction()
-        {
-            // This will happen when operators are recompiled and output slots are disconnected
-            if (KeepOriginalUpdateAction == null)
-            {
-                UpdateAction = null;
-                return;
-            }
 
-            UpdateAction = KeepOriginalUpdateAction;
-            KeepOriginalUpdateAction = null;
-            DirtyFlag.Trigger = KeepDirtyFlagTrigger;
-            DirtyFlag.Invalidate();
-        }
-
-        public void OverrideWithAnimationAction(Action<EvaluationContext> newAction)
-        {
-            // Animation actions are updated regardless if operator was already animated
-            if (KeepOriginalUpdateAction == null)
-            {
-                KeepOriginalUpdateAction = UpdateAction;
-                KeepDirtyFlagTrigger = DirtyFlag.Trigger;
-            }
-
-            UpdateAction = newAction;
-            DirtyFlag.Invalidate();
-        }
-
-        public virtual Action<EvaluationContext> UpdateAction { get; set; }
-
-        // ReSharper disable once StaticMemberInGenericType
-        protected static readonly Action<EvaluationContext> EmptyAction = _ => { };
-
-        protected Action<EvaluationContext> KeepOriginalUpdateAction;
-        protected DirtyFlagTrigger KeepDirtyFlagTrigger;
     }
 }
